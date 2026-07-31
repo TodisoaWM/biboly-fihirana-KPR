@@ -1,0 +1,49 @@
+// À ajouter à ton schema.prisma existant, à la suite des modèles Mofonaina
+
+// ---------- FFPM / Fanampiny / Antema (protestant) ----------
+
+model FihiranaProtestant {
+  id        Int      @id @default(autoincrement())
+  recueil   String   // "FFPM" | "Fanampiny" | "Antema"
+  numero    Int       // numéro du chant dans le recueil (ex: 1 pour FFPM 1)
+  titre     String?  // souvent vide dans la source, à défaut affiche "Recueil n°X"
+  auteurs   String[] // liste des auteurs si connus
+  versets   FihiranaProtestantVerset[]
+
+  @@unique([recueil, numero])
+  @@map("fihirana_protestant")
+}
+
+model FihiranaProtestantVerset {
+  id          Int                @id @default(autoincrement())
+  fihiranaId  Int
+  fihirana    FihiranaProtestant @relation(fields: [fihiranaId], references: [id])
+  andininy    Int                // numéro du couplet
+  tononkira   String             // paroles du couplet
+  fiverenany  Boolean            @default(false) // true si c'est un refrain
+
+  @@map("fihirana_protestant_versets")
+}
+
+// ---------- Fihirana Katolika (Dera, Hasina, Vavaka sy Hira, + bonus) ----------
+
+model FihiranaKatolika {
+  id       Int      @id // reprend l'id source de la base fihirana-katolika (stable, ne pas régénérer)
+  titre    String
+  paroles  String   // texte complet du chant (couplets), déjà nettoyé du HTML source
+  salamo   Int?      // numéro de Psaume associé, si applicable
+  recueils FihiranaKatolikaRecueil[]
+
+  @@map("fihirana_katolika")
+}
+
+model FihiranaKatolikaRecueil {
+  id         Int              @id @default(autoincrement())
+  chantId    Int
+  chant      FihiranaKatolika @relation(fields: [chantId], references: [id])
+  recueil    String           // "Fihirana Dera" | "Fihirana Hasina" | "Vavaka sy Hira" | ... (7 recueils au total)
+  page       Int              // numéro de page dans ce recueil précis
+
+  @@unique([chantId, recueil])
+  @@map("fihirana_katolika_recueils")
+}

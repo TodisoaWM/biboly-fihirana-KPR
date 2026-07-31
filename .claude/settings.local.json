@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"C:\\\\Users\\\\Todisoa\\\\Desktop\\\\baiboly\" && ls -la && echo \"--- app ---\" && ls -la app 2>/dev/null && echo \"--- looking for provided files ---\" && find . -maxdepth 3 -name \"*.prisma\" -o -maxdepth 3 -name \"REVUE.md\" -o -maxdepth 3 -name \"*.json\" 2>/dev/null | head -50)",
+      "Bash(npm -v)",
+      "Bash(npx --yes create-expo-app@latest _tmp_mofonaina --template default)",
+      "Bash(npx expo *)",
+      "Bash(npm install *)",
+      "Bash(xargs -n1 basename)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8081)",
+      "Bash(node -e \"console.log\\('jpeg-js', require\\('jpeg-js/package.json'\\).version\\)\")",
+      "Bash(npm run *)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(curl -sL -o scripts/tmp/Bible_MG65.json \"https://raw.githubusercontent.com/Rohan29-AN/MG-Bible-65/main/Bible_MG65.json\")",
+      "Bash(node -e ' *)",
+      "Bash(node scripts/build-bible.js)",
+      "Bash(awk '{print $5, $9}')",
+      "Bash(cd \"C:/Users/Todisoa/Desktop/baiboly\" && echo \"=== handoff ===\" && ls app/claude-code-handoff/ && echo \"=== Downloads mofonaina? ===\" && ls \"/c/Users/Todisoa/Downloads/\" 2>/dev/null | grep -i \"mofon\\\\|2026\\\\|calend\\\\|verses\\\\|books\" || echo \"\\(rien trouvé côté Downloads\\)\")",
+      "Bash(cd \"C:/Users/Todisoa\" && echo \"=== addition files anywhere ===\" && find Downloads Desktop -maxdepth 4 -iname \"*mofonaina*addition*\" -o -maxdepth 4 -iname \"mofonaina_2026*\" 2>/dev/null; echo \"=== recent Downloads dirs ===\" && ls -dt Downloads/*/ 2>/dev/null | head -10; echo \"=== zips ===\" && ls Downloads/*.zip 2>/dev/null)",
+      "Bash(awk -F',' 'NF!=5 {print NR\": \"NF\" fields: \"$0}' mofonaina_2026_noms_complets.csv)",
+      "Bash(awk -F',' 'NF>5')",
+      "Bash(cp \"C:/Users/Todisoa/Downloads/mofonaina_2026_noms_complets.csv\" \"C:/Users/Todisoa/Desktop/baiboly/app/claude-code-handoff/mofonaina_2026.csv\" && echo \"copied\" && wc -l \"C:/Users/Todisoa/Desktop/baiboly/app/claude-code-handoff/mofonaina_2026.csv\")",
+      "Bash(grep -n \"Toko, andininy\\\\|MANKANESA\\\\|Vakio ny toko\\\\|>BOKY<\\\\|\\\\\"BOKY\\\\\"\\\\|>HIRA<\\\\|>ANDININY<\\\\|Tsy nahitana\\\\|Ohatra :\\\\|toko}\\\\|{b.chapters}\\\\|useTheme\\(\\)\" src/app/search.tsx)",
+      "Bash(identify assets/images/iconBaiboly.png)",
+      "Bash(npx expo-doctor *)"
+    ]
+  }
+}

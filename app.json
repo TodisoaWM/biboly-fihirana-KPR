@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "Baiboly & Fihirana K&PR",
+    "slug": "mofonaina",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/iconBaiboly.png",
+    "scheme": "mofonaina",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "baiboly.fihirana.kpr"
+    },
+    "android": {
+      "package": "baiboly.fihirana.kpr",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/images/iconBaiboly.png",
+        "backgroundImage": "./assets/images/iconBaiboly.png",
+        "monochromeImage": "./assets/images/iconBaiboly.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/iconBaiboly.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#2B7888",
+          "image": "./assets/images/iconBaiboly.png",
+          "imageWidth": 76
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}
