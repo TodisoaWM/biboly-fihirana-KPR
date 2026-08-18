@@ -153,12 +153,13 @@ export default function PickerScreen() {
   const gridLabel =
     step === 'chapter' ? t('pick_chapter_label') : step === 'v1' ? t('pick_verse_label') : t('pick_upto_label');
 
-  // Libellé de la puce : « Matio 3 : 4 - 13 »
-  const chip =
-    book.name +
-    (chapter != null ? ` ${chapter}` : '') +
-    (v1 != null ? ` : ${v1}` : '') +
-    (v2 != null ? ` - ${v2}` : '');
+  // Libellé de la puce, scindé en deux : le nom du livre (peut être tronqué s'il
+  // est long) et le suffixe toko/andininy (jamais tronqué, toujours visible).
+  const chipSuffix =
+    (chapter != null ? ` ${chapter}` : '') + (v1 != null ? ` : ${v1}` : '') + (v2 != null ? ` - ${v2}` : '');
+
+  // Référence complète (livre + toko, andininy optionnels) → puce cliquable.
+  const canRead = chapter != null;
 
   return (
     <Screen edges={['top', 'bottom']}>
@@ -176,12 +177,23 @@ export default function PickerScreen() {
       <View style={styles.pickerBody}>
         {/* Puce de sélection courante + effacer */}
         <View style={styles.displayRow}>
-          <View style={[styles.display, { backgroundColor: theme.surface, borderColor: theme.border }, cardShadow(theme.shadow, 'sm')]}>
+          <Pressable
+            onPress={canRead ? read : undefined}
+            disabled={!canRead}
+            style={({ pressed }) => [
+              styles.display,
+              { backgroundColor: theme.surface, borderColor: theme.border, opacity: pressed ? 0.8 : 1 },
+              cardShadow(theme.shadow, 'sm'),
+            ]}
+          >
             <Icon name="book" size={18} color={theme.primary} strokeWidth={1.8} />
-            <Text style={[styles.chipText, { color: theme.text }]} numberOfLines={1}>
-              {chip}
+            <Text numberOfLines={1} style={[styles.chipText, styles.chipBook, { color: theme.text }]}>
+              {book.name}
             </Text>
-          </View>
+            {chipSuffix ? (
+              <Text style={[styles.chipText, styles.chipSuffix, { color: theme.text }]}>{chipSuffix}</Text>
+            ) : null}
+          </Pressable>
           <Pressable onPress={stepBack} style={[styles.xBtn, { backgroundColor: theme.surface, borderColor: theme.border }]} hitSlop={6}>
             <Text style={[styles.xText, { color: theme.textMuted }]}>✕</Text>
           </Pressable>
@@ -268,7 +280,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
   },
-  chipText: { fontFamily: FONTS.display, fontSize: 22, flexShrink: 1 },
+  chipText: { fontFamily: FONTS.display, fontSize: 22 },
+  chipBook: { flexShrink: 1 },
+  chipSuffix: { flexShrink: 0 },
   xBtn: { width: 44, height: 44, borderRadius: 22, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   xText: { fontFamily: FONTS.sansBold, fontSize: 20 },
   gridLabel: { fontFamily: FONTS.display, fontSize: 20, marginTop: 18, marginBottom: 4 },
