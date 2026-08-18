@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   // plus de lignes et un ancrage bas ferait remonter le badge hors du cadre (clip
   // par overflow:hidden). Ici le badge reste toujours visible ; seul le texte
   // s'étend vers le bas, contenu par adjustsFontSizeToFit/numberOfLines.
-  birthdayTitleWrap: { top: 44, bottom: 10, justifyContent: 'flex-start' },
+  birthdayTitleWrap: { top: 18, bottom: 10, justifyContent: 'flex-start' },
   birthdayBadge: {
     alignSelf: 'flex-start',
     flexDirection: 'row',
