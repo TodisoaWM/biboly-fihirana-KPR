@@ -161,7 +161,7 @@ export default function PickerScreen() {
     (v2 != null ? ` - ${v2}` : '');
 
   return (
-    <Screen edges={['top']}>
+    <Screen edges={['top', 'bottom']}>
       <View style={styles.header}>
         <View style={styles.leftCluster}>
           <Pressable onPress={toBooks} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>

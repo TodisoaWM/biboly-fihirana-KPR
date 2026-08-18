@@ -75,7 +75,7 @@ export default function HymnScreen() {
   let stanzaNo = 0;
 
   return (
-    <Screen edges={['top']}>
+    <Screen edges={['top', 'bottom']}>
       <View style={[styles.header, { borderBottomColor: theme.border }]}>
         <View style={styles.leftCluster}>
           <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>

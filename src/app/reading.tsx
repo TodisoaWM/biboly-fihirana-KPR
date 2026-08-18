@@ -86,7 +86,7 @@ export default function ReadingScreen() {
     vStart != null ? `${t('verses')} ${vStart}${vEnd != null && vEnd !== vStart ? `–${vEnd}` : ''}` : null;
 
   return (
-    <Screen edges={['top']}>
+    <Screen edges={['top', 'bottom']}>
       {/* Barre supérieure */}
       <View style={[styles.topBar, { borderBottomColor: theme.border }]}>
         <View style={styles.leftCluster}>
