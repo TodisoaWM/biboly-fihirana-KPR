@@ -11,6 +11,7 @@ export default function TabsLayout() {
       <Tabs.Screen name="index" />
       <Tabs.Screen name="baiboly" />
       <Tabs.Screen name="fihirana" />
+      <Tabs.Screen name="vavaka" />
       <Tabs.Screen name="tiana" />
     </Tabs>
   );

@@ -6,7 +6,9 @@ import { Icon } from '@/components/Icon';
 import { ImageSlot } from '@/components/ImageSlot';
 import { Screen } from '@/components/Screen';
 import { getReading } from '@/data/bible';
+import { getHymn, hymnRef, stanzaPreview, suggestHymns, type HymnSuggestion } from '@/data/fihirana';
 import { getMofonainaForDate } from '@/data/mofonaina';
+import { useDailyTitle } from '@/lib/dailyTitle';
 import { useI18n } from '@/lib/i18n';
 import { useProfile } from '@/lib/profile';
 import { FONTS, RADII, SPACING } from '@/theme/colors';
@@ -20,10 +22,13 @@ export default function AndroanyScreen() {
   const profile = useProfile();
   const firstName = profile.name.trim().split(/\s+/)[0];
 
+  const dailyTitle = useDailyTitle();
   const entry = getMofonainaForDate();
   const reading = getReading(entry.reference);
   const referenceLabel = reading?.label ?? entry.reference;
   const excerpt = reading?.verses[0]?.text ? `« ${reading.verses[0].text} »` : '';
+
+  const suggestions = suggestHymns();
 
   const openReading = () => router.push({ pathname: '/mofonaina', params: { date: entry.date } });
 
@@ -76,7 +81,7 @@ export default function AndroanyScreen() {
             pointerEvents="none"
           />
           <View style={styles.heroTitleWrap} pointerEvents="none">
-            <Text style={styles.heroTitle}>Ny fiadanan'ny Tompo{'\n'}ho aminao.</Text>
+            <Text style={styles.heroTitle}>{dailyTitle}</Text>
           </View>
         </View>
 
@@ -90,7 +95,7 @@ export default function AndroanyScreen() {
 
           <View style={[styles.chip, { backgroundColor: theme.chipBg }]}>
             <Icon name="bookmark" size={14} color={theme.chipText} strokeWidth={1.8} />
-            <Text style={[styles.chipText, { color: theme.chipText }]}>{referenceLabel}</Text>
+            <Text style={[styles.chipText, { color: theme.chipText }]} numberOfLines={1}>{referenceLabel}</Text>
           </View>
 
           {excerpt ? <Text style={[styles.excerpt, { color: theme.verse }]} numberOfLines={3}>{excerpt}</Text> : null}
@@ -103,6 +108,55 @@ export default function AndroanyScreen() {
             <Icon name="arrow-right" size={18} color={theme.onPrimary} strokeWidth={2.2} />
           </Pressable>
         </View>
+
+        {/* Proposition de chant du jour (protestant + catholique) */}
+        {(suggestions.protestanta || suggestions.katolika) && (
+          <>
+            <View style={styles.suggHead}>
+              <View style={[styles.suggHeadDot, { backgroundColor: theme.accent }]}>
+                <Icon name="music" size={13} color={theme.onPrimary} strokeWidth={2} />
+              </View>
+              <Text style={[styles.suggLabel, { color: theme.accent }]}>{t('song_suggestion')}</Text>
+            </View>
+            {([suggestions.protestanta, suggestions.katolika].filter(Boolean) as HymnSuggestion[]).map((sg) => {
+              const hymn = getHymn(sg.id);
+              const isProt = sg.tradition === 'protestanta';
+              const gradient: [string, string] = isProt
+                ? [theme.cardTealFrom, theme.cardTealTo]
+                : [theme.cardPinkFrom, theme.cardPinkTo];
+              const badgeBg = isProt ? theme.teal : theme.accent;
+              return (
+                <Pressable
+                  key={`${sg.id}-${sg.collectionKey}`}
+                  onPress={() => router.push({ pathname: '/hymn', params: { id: sg.id, c: sg.collectionKey, p: String(sg.page) } })}
+                  style={({ pressed }) => [{ opacity: pressed ? 0.9 : 1 }]}
+                >
+                  <LinearGradient
+                    colors={gradient}
+                    start={{ x: 0.1, y: 0 }}
+                    end={{ x: 0.9, y: 1 }}
+                    style={[styles.suggCard, { borderColor: theme.border }, cardShadow(theme.shadow, 'md')]}
+                  >
+                    <View style={[styles.suggBadge, { backgroundColor: badgeBg }]}>
+                      <Text style={styles.suggBadgeText}>{hymnRef(sg.tradition, sg.collectionKey, sg.page)}</Text>
+                    </View>
+                    <Text style={[styles.suggTitle, { color: theme.text }]} numberOfLines={1}>
+                      {sg.title}
+                    </Text>
+                    {hymn ? (
+                      <Text style={[styles.suggPreview, { color: theme.verse }]} numberOfLines={1}>
+                        {stanzaPreview(hymn).split('\n')[0]}
+                      </Text>
+                    ) : null}
+                    <View style={[styles.suggPlay, { backgroundColor: theme.primary }, cardShadow(theme.primary, 'md')]}>
+                      <Icon name="arrow-right" size={18} color={theme.onPrimary} strokeWidth={2.2} />
+                    </View>
+                  </LinearGradient>
+                </Pressable>
+              );
+            })}
+          </>
+        )}
       </ScrollView>
     </Screen>
   );
@@ -132,9 +186,9 @@ const styles = StyleSheet.create({
   heroIconRight: { position: 'absolute', top: 16, right: 18, opacity: 0.85 },
   heroTitleWrap: { position: 'absolute', left: 20, right: 20, bottom: 18 },
   heroTitle: {
-    fontFamily: FONTS.display,
-    fontSize: 22,
-    lineHeight: 27,
+    fontFamily: FONTS.hand,
+    fontSize: 26,
+    lineHeight: 32,
     color: '#FFFDF0',
     // @ts-expect-error web textShadow for legibility over the photo
     textShadow: '0 1px 8px rgba(0,0,0,0.55)',
@@ -182,4 +236,29 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   ctaText: { fontFamily: FONTS.sansExtra, fontSize: 15 },
+  suggHead: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 28, marginBottom: 12 },
+  suggHeadDot: { width: 22, height: 22, borderRadius: 11, alignItems: 'center', justifyContent: 'center' },
+  suggLabel: { fontFamily: FONTS.sansExtra, fontSize: 12, letterSpacing: 0.8 },
+  suggCard: {
+    borderRadius: RADII.xl,
+    padding: 18,
+    borderWidth: 1,
+    overflow: 'hidden',
+    marginBottom: 12,
+    minHeight: 96,
+  },
+  suggBadge: { alignSelf: 'flex-start', paddingVertical: 4, paddingHorizontal: 10, borderRadius: RADII.pill },
+  suggBadgeText: { color: '#fff', fontFamily: FONTS.sansExtra, fontSize: 10.5 },
+  suggTitle: { fontFamily: FONTS.display, fontSize: 19, marginTop: 10, maxWidth: '76%' },
+  suggPreview: { fontFamily: FONTS.serif, fontSize: 13, marginTop: 4, maxWidth: '76%' },
+  suggPlay: {
+    position: 'absolute',
+    right: 16,
+    bottom: 16,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

@@ -22,6 +22,10 @@ export type IconName =
   | 'play'
   | 'volume'
   | 'format'
+  | 'pray'
+  | 'hash'
+  | 'book-search'
+  | 'music-search'
   | 'sunrise';
 
 type Props = {
@@ -158,6 +162,41 @@ export function Icon({ name, size = 24, color = '#232020', strokeWidth = 1.8, fi
           <>
             <Path {...stroke} d="M4 7V5h16v2M9 5v14M6 19h6" />
             <Path {...stroke} d="M16 12h4M18 10v10M15 20h6" />
+          </>
+        );
+      case 'pray':
+        return (
+          <>
+            {/* main gauche */}
+            <Path {...stroke} d="M12 21.5V6.4c0-1.1-.5-2.2-1.4-2.9l-.4-.3c-.5-.4-1.2-.3-1.6.2-.3.4-.4.9-.2 1.4l1 2.6-3.1 2.8c-.8.7-1.3 1.8-1.3 2.9v2.2c0 .7.3 1.4.9 1.9l2.6 2.3" />
+            {/* main droite (miroir) */}
+            <Path {...stroke} d="M12 21.5V6.4c0-1.1.5-2.2 1.4-2.9l.4-.3c.5-.4 1.2-.3 1.6.2.3.4.4.9.2 1.4l-1 2.6 3.1 2.8c.8.7 1.3 1.8 1.3 2.9v2.2c0 .7-.3 1.4-.9 1.9l-2.6 2.3" />
+          </>
+        );
+      case 'hash':
+        return <Path {...stroke} d="M10 4 8 20M16 4l-2 16M5 9h15M4 15h15" />;
+      case 'book-search':
+        return (
+          <>
+            {/* couverture du livre (dos arrondi à gauche) — remplit la zone */}
+            <Path {...stroke} d="M5 2.5H15V18H5A1.5 1.5 0 0 1 3.5 16.5V4A1.5 1.5 0 0 1 5 2.5Z" />
+            {/* marque-page */}
+            <Path {...stroke} d="M9 2.5V8L10.75 6.5 12.5 8V2.5" />
+            {/* loupe */}
+            <Circle {...stroke} cx={16} cy={15.5} r={4.1} />
+            <Path {...stroke} d="M19 18.6 22 21.6" />
+          </>
+        );
+      case 'music-search':
+        return (
+          <>
+            {/* note de musique (en haut à gauche) */}
+            <Path {...stroke} d="M8 12.5V3.5L14 2.3V11" />
+            <Circle {...stroke} cx={5.7} cy={12.5} r={2.3} />
+            <Circle {...stroke} cx={11.7} cy={11} r={2.3} />
+            {/* loupe (en bas à droite) */}
+            <Circle {...stroke} cx={16.5} cy={16} r={4} />
+            <Path {...stroke} d="M19.4 19 22 21.6" />
           </>
         );
       default:

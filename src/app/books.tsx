@@ -43,8 +43,8 @@ export default function BooksScreen() {
       <View style={[styles.num, { backgroundColor: theme.surfaceAlt }]}>
         <Text style={[styles.numText, { color: theme.textMuted }]}>{b.id}</Text>
       </View>
-      <Text style={[styles.bookName, { color: theme.text }]}>{b.name}</Text>
-      <Text style={[styles.chapters, { color: theme.textFaint }]}>{b.chapters} {t('chapters_lc')}</Text>
+      <Text style={[styles.bookName, { color: theme.text }]} numberOfLines={1}>{b.name}</Text>
+      <Text style={[styles.chapters, { color: theme.textFaint }]} numberOfLines={1}>{b.chapters} {t('chapters_lc')}</Text>
       <Icon name="chevron-right" size={16} color={theme.textFaint} strokeWidth={2.2} />
     </Pressable>
   );
@@ -70,6 +70,13 @@ export default function BooksScreen() {
         )}
 
         <View style={styles.rightCluster}>
+          <Pressable
+            onPress={() => router.push('/picker')}
+            style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}
+            accessibilityLabel={t('chapter_verse')}
+          >
+            <Icon name="book-search" size={23} color={theme.primary} strokeWidth={1.7} />
+          </Pressable>
           <Pressable onPress={toggleSearch} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
             {searching ? (
               <Text style={[styles.closeX, { color: theme.text }]}>✕</Text>

@@ -9,6 +9,7 @@ import { getBook, parseReference, searchBooks, searchVerses } from '@/data/bible
 import { hymnRef, searchHymns } from '@/data/fihirana';
 import { useI18n } from '@/lib/i18n';
 import { useSafeBack } from '@/lib/nav';
+import { useToast } from '@/lib/toast';
 import { FONTS, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -33,6 +34,13 @@ export default function SearchScreen() {
 
   const refBook = reference ? getBook(reference.bookCode) : undefined;
   const hasAny = reference || books.length || hymns.length || verses.length;
+
+  // Notification « introuvable » quand une recherche aboutie ne renvoie rien.
+  const toast = useToast();
+  useEffect(() => {
+    if (debounced.trim().length >= 2 && !hasAny) toast.notFound();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debounced]);
 
   const Label = ({ children }: { children: string }) => (
     <Text style={[styles.label, { color: theme.textFaint }]}>{children}</Text>
@@ -93,7 +101,7 @@ export default function SearchScreen() {
                 <Icon name="book" size={17} color={theme.onPrimary} strokeWidth={1.8} />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={[styles.rowTitle, { color: theme.text }]}>
+                <Text style={[styles.rowTitle, { color: theme.text }]} numberOfLines={1}>
                   {refBook.name} {reference.chapter}
                   {reference.verseStart ? `:${reference.verseStart}${reference.verseEnd ? `-${reference.verseEnd}` : ''}` : ''}
                 </Text>
@@ -114,7 +122,7 @@ export default function SearchScreen() {
                   <Icon name="book" size={16} color={theme.chipText} strokeWidth={1.8} />
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={[styles.rowTitle, { color: theme.text }]}>{b.name}</Text>
+                  <Text style={[styles.rowTitle, { color: theme.text }]} numberOfLines={1}>{b.name}</Text>
                   <Text style={[styles.rowSub, { color: theme.textMuted }]}>{b.chapters} {t('chapters_lc')}</Text>
                 </View>
                 <Icon name="chevron-right" size={16} color={theme.textFaint} strokeWidth={2.2} />

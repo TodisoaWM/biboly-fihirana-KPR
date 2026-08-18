@@ -55,7 +55,7 @@ export default function HymnsScreen() {
           <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
         </Pressable>
         <View style={styles.headerCenter}>
-          <Text style={[styles.title, { color: theme.text }]} numberOfLines={1}>
+          <Text style={[styles.title, { color: theme.text }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>
             {collectionName(key)}
           </Text>
           <Text style={[styles.sub, { color: theme.textFaint }]}>
@@ -67,7 +67,7 @@ export default function HymnsScreen() {
             onPress={() => router.push({ pathname: '/hymnpicker', params: { collection: key } })}
             style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}
           >
-            <Icon name="format" size={18} color={theme.primary} strokeWidth={1.9} />
+            <Icon name="music-search" size={23} color={theme.primary} strokeWidth={1.7} />
           </Pressable>
           <ProfileButton />
         </View>

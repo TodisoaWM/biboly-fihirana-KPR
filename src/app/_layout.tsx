@@ -1,6 +1,7 @@
-import { Fraunces_500Medium } from '@expo-google-fonts/fraunces/500Medium';
-import { Fraunces_600SemiBold } from '@expo-google-fonts/fraunces/600SemiBold';
-import { Fraunces_700Bold } from '@expo-google-fonts/fraunces/700Bold';
+import { DMSans_500Medium } from '@expo-google-fonts/dm-sans/500Medium';
+import { DMSans_600SemiBold } from '@expo-google-fonts/dm-sans/600SemiBold';
+import { DMSans_700Bold } from '@expo-google-fonts/dm-sans/700Bold';
+import { EduVICWANTHand_500Medium } from '@expo-google-fonts/edu-vic-wa-nt-hand/500Medium';
 import { Lora_400Regular } from '@expo-google-fonts/lora/400Regular';
 import { Lora_400Regular_Italic } from '@expo-google-fonts/lora/400Regular_Italic';
 import { Lora_500Medium } from '@expo-google-fonts/lora/500Medium';
@@ -11,11 +12,26 @@ import { NunitoSans_800ExtraBold } from '@expo-google-fonts/nunito-sans/800Extra
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import BootScreen from '@/components/BootScreen';
+import { type Lang } from '@/lib/dailyTitle';
+import { ensureDailyNotificationScheduled } from '@/lib/notifications';
+import { useProfile } from '@/lib/profile';
+import { ToastProvider } from '@/lib/toast';
 import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
+
+/** Reprogramme la notif quotidienne (6h) à chaque ouverture de l'app. */
+function NotifScheduler() {
+  const profile = useProfile();
+  const lang = ((profile.language as Lang) || 'mg') as Lang;
+  useEffect(() => {
+    ensureDailyNotificationScheduled(lang).catch(() => {});
+  }, [lang]);
+  return null;
+}
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -39,6 +55,7 @@ function StackNav() {
       <Stack.Screen name="edit-profile" options={{ animation: 'slide_from_bottom' }} />
       <Stack.Screen name="language" options={{ animation: 'slide_from_right' }} />
       <Stack.Screen name="about-mofonaina" options={{ animation: 'slide_from_right' }} />
+      <Stack.Screen name="vavaka-read" options={{ animation: 'slide_from_right' }} />
     </Stack>
   );
 }
@@ -55,9 +72,10 @@ function WebFrame({ children }: { children: React.ReactNode }) {
 
 export default function RootLayout() {
   const [loaded] = useFonts({
-    Fraunces_500Medium,
-    Fraunces_600SemiBold,
-    Fraunces_700Bold,
+    DMSans_500Medium,
+    DMSans_600SemiBold,
+    DMSans_700Bold,
+    EduVICWANTHand_500Medium,
     NunitoSans_400Regular,
     NunitoSans_600SemiBold,
     NunitoSans_700Bold,
@@ -67,17 +85,30 @@ export default function RootLayout() {
     Lora_500Medium,
   });
 
-  useEffect(() => {
-    if (loaded) SplashScreen.hideAsync().catch(() => {});
-  }, [loaded]);
+  // Masque le splash natif dès que le boot screen React a peint sa 1re frame,
+  // pour afficher la couverture EN PLEIN ÉCRAN (le splash natif Android 12+ ne
+  // sait afficher qu'une icône centrée).
+  const onBootLayout = useCallback(() => {
+    SplashScreen.hideAsync().catch(() => {});
+  }, []);
 
-  if (!loaded) return null;
+  // Pendant le chargement (polices/thème) : couverture.png plein écran.
+  if (!loaded) {
+    return (
+      <WebFrame>
+        <BootScreen onLayout={onBootLayout} />
+      </WebFrame>
+    );
+  }
 
   return (
     <SafeAreaProvider>
       <ThemeProvider>
         <WebFrame>
-          <StackNav />
+          <ToastProvider>
+            <NotifScheduler />
+            <StackNav />
+          </ToastProvider>
         </WebFrame>
       </ThemeProvider>
     </SafeAreaProvider>

@@ -4,6 +4,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { FavButton } from '@/components/FavButton';
 import { Icon } from '@/components/Icon';
 import { ProfileButton } from '@/components/ProfileButton';
+import { ReaderToolbar } from '@/components/ReaderToolbar';
 import { Screen } from '@/components/Screen';
 import { getReading } from '@/data/bible';
 import { getMofonainaByISO } from '@/data/mofonaina';
@@ -90,6 +91,7 @@ export default function MofonainaScreen() {
           </Text>
         )}
       </ScrollView>
+      <ReaderToolbar />
     </Screen>
   );
 }

@@ -12,6 +12,23 @@ const T: Record<string, Entry> = {
   tab_bible: { mg: 'Baiboly', fr: 'Bible', en: 'Bible' },
   tab_hymnal: { mg: 'Fihirana', fr: 'Chants', en: 'Hymns' },
   tab_favorites: { mg: 'Tiana', fr: 'Favoris', en: 'Favorites' },
+  tab_prayer: { mg: 'Vavaka', fr: 'Prière', en: 'Prayer' },
+  prayer_subtitle: { mg: 'Vavaka sy fangatahana', fr: 'Prières et intentions', en: 'Prayers & intentions' },
+  prayer_soon_title: { mg: 'Ho avy tsy ho ela', fr: 'Bientôt disponible', en: 'Coming soon' },
+  prayer_soon_body: {
+    mg: 'Hampidirina eto tsy ho ela ny vavaka isan-karazany.',
+    fr: 'Les prières seront ajoutées ici prochainement.',
+    en: 'Prayers will be added here soon.',
+  },
+  prayer_refs: { mg: "Ao amin'ny Soratra Masina", fr: 'Références bibliques', en: 'Scripture references' },
+  close: { mg: 'Akatona', fr: 'Fermer', en: 'Close' },
+  rights_reserved: { mg: 'Zo rehetra voatokana.', fr: 'Tous droits réservés.', en: 'All rights reserved.' },
+  contact_title: { mg: 'Fifandraisana', fr: 'Contact', en: 'Contact' },
+  contact_intro: {
+    mg: "Raha te hifandray aminay, na hitatitra olana, na hanome soso-kevitra fanatsarana momba ny application dia :",
+    fr: 'Pour nous contacter, signaler un problème ou proposer une amélioration :',
+    en: 'To contact us, report a problem or suggest an improvement:',
+  },
 
   // Accueil
   hello: { mg: 'Miarahaba', fr: 'Bonjour', en: 'Hello' },
@@ -41,6 +58,7 @@ const T: Record<string, Entry> = {
   hymns_subtitle: { mg: 'Hira sy antsam-panahy', fr: 'Chants et cantiques', en: 'Songs & hymns' },
   search_hymn_ph: { mg: 'Hitady laharana na lohateny…', fr: 'Numéro ou titre…', en: 'Number or title…' },
   recently_opened: { mg: 'NOSOKAFANA FARANY', fr: 'OUVERT RÉCEMMENT', en: 'RECENTLY OPENED' },
+  song_suggestion: { mg: 'HIRA ATOLOTRA', fr: 'PROPOSITION DE CHANT', en: 'SONG SUGGESTION' },
   see_all: { mg: 'Hijery rehetra', fr: 'Tout voir', en: 'See all' },
   protestant: { mg: 'PROTESTANTA', fr: 'PROTESTANT', en: 'PROTESTANT' },
   catholic: { mg: 'KATOLIKA', fr: 'CATHOLIQUE', en: 'CATHOLIC' },
@@ -67,6 +85,11 @@ const T: Record<string, Entry> = {
   hint_chapter: { mg: 'Soraty ny toko, dia tsindrio →', fr: 'Entrez le chapitre, puis →', en: 'Enter the chapter, then →' },
   hint_v1: { mg: 'Andininy voalohany, dia tsindrio →', fr: 'Premier verset, puis →', en: 'First verse, then →' },
   hint_v2: { mg: 'Andininy farany', fr: 'Dernier verset', en: 'Last verse' },
+  pick_chapter_label: { mg: 'Toko faha-', fr: 'Chapitre n°', en: 'Chapter no.' },
+  pick_verse_label: { mg: 'Andininy faha-', fr: 'Verset n°', en: 'Verse no.' },
+  pick_upto_label: { mg: "ka hatramin'ny", fr: "jusqu'au verset", en: 'up to verse' },
+  pick_optional_verse: { mg: 'Fidio andininy (na tsindrio Vakio)', fr: 'Choisissez un verset (ou Lire)', en: 'Pick a verse (or Read)' },
+  read_btn: { mg: 'Vakio', fr: 'Lire', en: 'Read' },
   err_chapter: { mg: 'Fidio toko.', fr: 'Choisissez un chapitre.', en: 'Pick a chapter.' },
   err_number: { mg: 'Soraty ny laharana.', fr: 'Entrez le numéro.', en: 'Enter the number.' },
 

@@ -58,12 +58,28 @@ export default function BaibolyScreen() {
     <Screen>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.headerRow}>
-          <Pressable
-            onPress={() => router.push('/search')}
-            style={[styles.searchBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}
-          >
-            <Icon name="search" size={20} color={theme.text} strokeWidth={2} />
-          </Pressable>
+          <View style={styles.headerActions}>
+            <Pressable
+              onPress={() => router.push('/search')}
+              style={[styles.searchBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}
+            >
+              <Icon name="search" size={20} color={theme.text} strokeWidth={2} />
+            </Pressable>
+            <Pressable
+              onPress={() => router.push('/picker')}
+              style={[styles.searchBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}
+              accessibilityLabel={t('chapter_verse')}
+            >
+              <Icon name="book-search" size={24} color={theme.primary} strokeWidth={1.7} />
+            </Pressable>
+            <Pressable
+              onPress={() => router.push('/recents')}
+              style={[styles.searchBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}
+              accessibilityLabel={t('recent_readings')}
+            >
+              <Icon name="bookmark" size={20} color={theme.accent} strokeWidth={1.9} />
+            </Pressable>
+          </View>
           <ProfileButton />
         </View>
 
@@ -92,24 +108,6 @@ export default function BaibolyScreen() {
           onPress={() => router.navigate('/fihirana')}
         />
 
-        <View style={{ height: SPACING.lg }} />
-
-        <View style={styles.quickRow}>
-          <Pressable
-            onPress={() => router.push('/picker')}
-            style={({ pressed }) => [styles.quick, { backgroundColor: theme.surface, borderColor: theme.border, opacity: pressed ? 0.85 : 1 }]}
-          >
-            <Icon name="format" size={20} color={theme.primary} strokeWidth={1.9} />
-            <Text style={[styles.quickText, { color: theme.text }]}>{t('chapter_verse')}</Text>
-          </Pressable>
-          <Pressable
-            onPress={() => router.push('/recents')}
-            style={({ pressed }) => [styles.quick, { backgroundColor: theme.surface, borderColor: theme.border, opacity: pressed ? 0.85 : 1 }]}
-          >
-            <Icon name="bookmark" size={20} color={theme.accent} strokeWidth={1.9} />
-            <Text style={[styles.quickText, { color: theme.text }]}>{t('recent_readings')}</Text>
-          </Pressable>
-        </View>
       </ScrollView>
     </Screen>
   );
@@ -118,6 +116,7 @@ export default function BaibolyScreen() {
 const styles = StyleSheet.create({
   content: { paddingHorizontal: 26, paddingTop: 14, paddingBottom: SPACING.xl },
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  headerActions: { flexDirection: 'row', gap: 10 },
   avatar: {
     width: 40,
     height: 40,

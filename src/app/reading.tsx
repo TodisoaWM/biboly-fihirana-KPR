@@ -7,6 +7,7 @@ import { FavButton } from '@/components/FavButton';
 import { Icon } from '@/components/Icon';
 import { ProfileButton } from '@/components/ProfileButton';
 import { Screen } from '@/components/Screen';
+import { TextSizeControl } from '@/components/TextSizeControl';
 import { getBook, getChapter } from '@/data/bible';
 import { useI18n } from '@/lib/i18n';
 import { addBibleRecent } from '@/lib/recents';
@@ -91,10 +92,15 @@ export default function ReadingScreen() {
           <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
         </Pressable>
         <Pressable style={styles.topCenter} onPress={() => router.push({ pathname: '/chapters', params: { book: bookCode } })}>
-          <Text style={[styles.bookTitle, { color: theme.text }]}>
+          <Text
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.7}
+            style={[styles.bookTitle, { color: theme.text }]}
+          >
             {book?.name ?? bookCode} {chapter}
           </Text>
-          <Text style={[styles.bookSub, { color: theme.textFaint }]}>
+          <Text numberOfLines={1} style={[styles.bookSub, { color: theme.textFaint }]}>
             {(book ? (book.testament === 'TT' ? t('ot') : t('nt')) : '').toUpperCase()} · {t('chapter_word')} {chapter}
           </Text>
         </Pressable>
@@ -154,10 +160,7 @@ export default function ReadingScreen() {
           </Text>
         </Pressable>
 
-        <View style={styles.centerIcons}>
-          <Icon name="format" size={21} color={theme.text} strokeWidth={1.8} />
-          <Icon name="volume" size={21} color={theme.text} strokeWidth={1.8} />
-        </View>
+        <TextSizeControl />
 
         <Pressable
           disabled={!hasNext}
@@ -231,8 +234,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
     paddingVertical: 11,
-    paddingHorizontal: 14,
+    paddingHorizontal: 12,
     borderRadius: 15,
+    flexShrink: 1,
+    minWidth: 0,
     maxWidth: 130,
   },
   navChipText: { fontFamily: FONTS.sansBold, fontSize: 12.5, flexShrink: 1 },

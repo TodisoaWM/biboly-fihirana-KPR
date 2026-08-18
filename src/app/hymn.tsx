@@ -6,6 +6,7 @@ import { FavButton } from '@/components/FavButton';
 import { Icon } from '@/components/Icon';
 import { ProfileButton } from '@/components/ProfileButton';
 import { Screen } from '@/components/Screen';
+import { TextSizeControl } from '@/components/TextSizeControl';
 import { collectionName, getHymn, getHymnsByCollection, hymnRef, placeIn } from '@/data/fihirana';
 import { useI18n } from '@/lib/i18n';
 import { useSafeBack } from '@/lib/nav';
@@ -76,10 +77,10 @@ export default function HymnScreen() {
           <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
         </Pressable>
         <View style={styles.headerCenter}>
-          <Text style={[styles.hTitle, { color: theme.text }]} numberOfLines={1}>
+          <Text style={[styles.hTitle, { color: theme.text }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>
             {katolika ? collectionName(collKey) : `${collectionName(collKey)} ${page}`}
           </Text>
-          <Text style={[styles.hSub, { color: theme.textFaint }]}>
+          <Text numberOfLines={1} style={[styles.hSub, { color: theme.textFaint }]}>
             {katolika ? (page > 0 ? `${t('page').toUpperCase()} ${page}` : t('catholic')) : t('number').toUpperCase()}
           </Text>
         </View>
@@ -138,6 +139,9 @@ export default function HymnScreen() {
             {prev ? navLabel(prev) : '—'}
           </Text>
         </Pressable>
+
+        <TextSizeControl />
+
         <Pressable
           disabled={!next}
           onPress={() => next && go(next.id, next.page)}
@@ -202,6 +206,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderTopWidth: 1,
   },
-  navChip: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 11, paddingHorizontal: 16, borderRadius: 15, maxWidth: 160 },
+  navChip: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 11, paddingHorizontal: 12, borderRadius: 15, flexShrink: 1, minWidth: 0, maxWidth: 130 },
   navChipText: { fontFamily: FONTS.sansBold, fontSize: 12.5, flexShrink: 1 },
 });

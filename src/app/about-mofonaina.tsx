@@ -63,7 +63,7 @@ export default function AboutMofonainaScreen() {
           <Text style={[styles.theme, { color: theme.text }]} numberOfLines={1}>
             {item.theme}
           </Text>
-          <Text style={[styles.ref, { color: theme.textMuted }]}>
+          <Text style={[styles.ref, { color: theme.textMuted }]} numberOfLines={1}>
             {weekday(item.date)} · {item.reference}
           </Text>
         </View>

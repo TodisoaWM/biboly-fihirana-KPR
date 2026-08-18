@@ -5,6 +5,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { FavButton } from '@/components/FavButton';
 import { Icon } from '@/components/Icon';
 import { ProfileButton } from '@/components/ProfileButton';
+import { ReaderToolbar } from '@/components/ReaderToolbar';
 import { Screen } from '@/components/Screen';
 import { getReading } from '@/data/bible';
 import { useI18n } from '@/lib/i18n';
@@ -47,7 +48,7 @@ export default function PassageScreen() {
         <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
           <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
         </Pressable>
-        <Text style={[styles.topTitle, { color: theme.text }]} numberOfLines={1}>
+        <Text style={[styles.topTitle, { color: theme.text }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>
           {reading?.label ?? ref}
         </Text>
         <View style={styles.rightCluster}>
@@ -87,6 +88,7 @@ export default function PassageScreen() {
           <Text style={[styles.notFound, { color: theme.textMuted }]}>{t('ref_unreadable')} « {ref} ».</Text>
         )}
       </ScrollView>
+      <ReaderToolbar />
     </Screen>
   );
 }

@@ -68,7 +68,7 @@ export default function HymnPickerScreen() {
         <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
           <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
         </Pressable>
-        <Text style={[styles.title, { color: theme.text }]} numberOfLines={1}>{collectionName(key)}</Text>
+        <Text style={[styles.title, { color: theme.text }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>{collectionName(key)}</Text>
         <View style={styles.rightCluster}>
           <Pressable onPress={() => router.push('/search')} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
             <Icon name="search" size={18} color={theme.text} strokeWidth={2} />
@@ -120,12 +120,28 @@ const styles = StyleSheet.create({
   displayRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   display: { flex: 1, borderRadius: RADII.pill, borderWidth: 1, paddingVertical: 14, paddingHorizontal: 22, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
   collLabel: { fontFamily: FONTS.display, fontSize: 20, flexShrink: 1 },
-  num: { fontFamily: FONTS.display, fontSize: 26, minWidth: 30, textAlign: 'right' },
+  num: { fontFamily: FONTS.display, fontSize: 22, minWidth: 30, textAlign: 'right' },
   xBtn: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
   xText: { fontFamily: FONTS.sansBold, fontSize: 22 },
   hint: { fontFamily: FONTS.sansSemi, fontSize: 12.5, textAlign: 'center', marginTop: 14 },
   pad: { marginTop: 16, flexDirection: 'row', flexWrap: 'wrap', gap: 12, justifyContent: 'center' },
-  key: { width: '22%', aspectRatio: 1.35, borderRadius: 18, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  keyText: { fontFamily: FONTS.sansExtra, fontSize: 22 },
+  // Le BOUTON centre le texte (flexbox) → marche sur web ET natif. Le texte est
+  // à taille de contenu (pas de flex:1). includeFontPadding:false enlève la marge
+  // de police Android qui poussait le chiffre vers le haut.
+  key: {
+    width: '22%',
+    aspectRatio: 1.35,
+    borderRadius: 18,
+    borderWidth: 1,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  keyText: {
+    fontFamily: FONTS.sansExtra,
+    fontSize: 19,
+    textAlign: 'center',
+    includeFontPadding: false,
+  },
   keyTextSmall: { fontSize: 13, letterSpacing: 0.5 },
 });

@@ -4,7 +4,9 @@ import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import {
   LayoutChangeEvent,
+  Linking,
   PanResponder,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -15,13 +17,33 @@ import {
 import { Icon } from '@/components/Icon';
 import { ImageSlot } from '@/components/ImageSlot';
 import { Screen } from '@/components/Screen';
+import { type Lang } from '@/lib/dailyTitle';
 import { languageName, useI18n } from '@/lib/i18n';
+import { sendTestNotification } from '@/lib/notifications';
 import { useProfile } from '@/lib/profile';
+import { useToast } from '@/lib/toast';
 import { ACCENTS, FONTS, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
 const APP_VERSION = Constants.expoConfig?.version ?? '1.0.0';
+const CONTACT_EMAIL = 'todisoartwm@gmail.com';
+
+/**
+ * Ouvre un message vers l'email de contact.
+ * - Natif (APK) : `mailto:` → ouvre l'app mail par défaut (Gmail si défini ainsi).
+ * - Web : ouvre directement la fenêtre de rédaction Gmail (fiable dans un navigateur,
+ *   contrairement à `mailto:` qui ne fait rien sans client mail configuré).
+ */
+function openContactEmail() {
+  const subject = encodeURIComponent('Baiboly & Fihirana K&PR');
+  if (Platform.OS === 'web') {
+    const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${CONTACT_EMAIL}&su=${subject}`;
+    if (typeof window !== 'undefined') window.open(gmail, '_blank');
+  } else {
+    Linking.openURL(`mailto:${CONTACT_EMAIL}?subject=${subject}`).catch(() => {});
+  }
+}
 
 const SCALE_MIN = 0.85;
 const SCALE_MAX = 1.35;
@@ -88,7 +110,31 @@ export default function SettingsScreen() {
   const router = useRouter();
   const { t } = useI18n();
   const profile = useProfile();
+  const toast = useToast();
   const [reminders, setReminders] = useState(true);
+  const lang = ((profile.language as Lang) || 'mg') as Lang;
+
+  // Geste caché : 5 appuis rapides sur « Ambiance du jour » → notif de test.
+  const tapCount = useRef(0);
+  const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const onAmbianceTap = () => {
+    if (tapTimer.current) clearTimeout(tapTimer.current);
+    tapCount.current += 1;
+    if (tapCount.current >= 5) {
+      tapCount.current = 0;
+      sendTestNotification(lang).then((ok) => {
+        toast.show(
+          ok
+            ? { mg: 'Fanairana andrana nalefa.', fr: 'Notification de test envoyée.', en: 'Test notification sent.' }
+            : { mg: 'Tsy nalefa (avelao ny fanairana).', fr: "Impossible (autorise les notifications).", en: 'Could not send (allow notifications).' },
+        );
+      });
+    } else {
+      tapTimer.current = setTimeout(() => {
+        tapCount.current = 0;
+      }, 1500);
+    }
+  };
 
   return (
     <Screen>
@@ -165,7 +211,8 @@ export default function SettingsScreen() {
 
         {/* Sary sy endrika — ambiance du jour (automatique, lecture seule) */}
         <Text style={[styles.sectionLabel, { color: theme.textFaint }]}>{t('image_mood')}</Text>
-        <View
+        <Pressable
+          onPress={onAmbianceTap}
           style={[
             styles.card,
             styles.ambianceCard,
@@ -180,7 +227,7 @@ export default function SettingsScreen() {
             <Text style={[styles.cardTitle, { color: theme.text }]}>{t('day_mood')}</Text>
             <Text style={[styles.cardHint, { color: theme.textFaint }]}>{t('day_mood_sub')}</Text>
           </View>
-        </View>
+        </Pressable>
 
         {/* Habe soratra */}
         <Text style={[styles.sectionLabel, { color: theme.textFaint }]}>{t('font_size')}</Text>
@@ -214,8 +261,24 @@ export default function SettingsScreen() {
           </Pressable>
         </View>
 
+        {/* Contact */}
+        <Text style={[styles.sectionLabel, { color: theme.primary }]}>{t('contact_title')}</Text>
+        <View style={[styles.contactCard, { backgroundColor: theme.surface, borderColor: theme.border }, cardShadow(theme.shadow, 'sm')]}>
+          <Text style={[styles.contactIntro, { color: theme.textMuted }]}>{t('contact_intro')}</Text>
+          <Pressable
+            onPress={openContactEmail}
+            style={({ pressed }) => [styles.contactRow, { opacity: pressed ? 0.6 : 1 }]}
+          >
+            <View style={[styles.settingIcon, { backgroundColor: theme.cardTealFrom }]}>
+              <Icon name="bell" size={16} color={theme.teal} strokeWidth={1.8} />
+            </View>
+            <Text style={[styles.contactEmail, { color: theme.primary }]}>{CONTACT_EMAIL}</Text>
+            <Icon name="chevron-right" size={16} color={theme.textFaint} strokeWidth={2.2} />
+          </Pressable>
+        </View>
+
         <Text style={[styles.footer, { color: theme.textFaint }]}>
-          Baiboly & Fihirana K&PR · v{APP_VERSION}{'\n'}© 2026 Todisoa. Zo rehetra voatokana.
+          Baiboly & Fihirana K&PR · v{APP_VERSION}{'\n'}© 2026 Todisoa. {t('rights_reserved')}
         </Text>
       </ScrollView>
     </Screen>
@@ -321,6 +384,10 @@ const styles = StyleSheet.create({
   settingText: { flex: 1, fontFamily: FONTS.sansBold, fontSize: 13.5 },
   settingValue: { fontFamily: FONTS.sansSemi, fontSize: 13 },
   footer: { fontFamily: FONTS.sansSemi, fontSize: 11.5, textAlign: 'center', lineHeight: 18, marginTop: 22 },
+  contactCard: { borderRadius: 18, borderWidth: 1, padding: 16 },
+  contactIntro: { fontFamily: FONTS.sansSemi, fontSize: 13, lineHeight: 20 },
+  contactRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 },
+  contactEmail: { fontFamily: FONTS.sansBold, fontSize: 14.5, flex: 1, textDecorationLine: 'underline' },
   toggle: { width: 44, height: 26, borderRadius: 13, padding: 3, justifyContent: 'center' },
   knob: { width: 20, height: 20, borderRadius: 10, backgroundColor: '#fff' },
   knobOn: { alignSelf: 'flex-end' },

@@ -3,7 +3,7 @@
  * build-mofonaina.js — transforme le calendrier CSV (184 jours, Jolay→Desambra
  * 2026) en bundle app : src/data/mofonaina.data.json  [{ date, theme, reference }]
  *
- * Source : claude-code-handoff/mofonaina_2026.csv
+ * Source : source/mofonaina_2026.csv
  *   colonnes : Mois, Jour, Thème, Référence (abrégée), Référence (nom complet)
  *
  * Lancer :  npm run mofonaina:build
@@ -13,7 +13,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const SRC = path.join(ROOT, 'claude-code-handoff', 'mofonaina_2026.csv');
+const SRC = path.join(ROOT, 'source', 'mofonaina_2026.csv');
 const OUT = path.join(ROOT, 'src', 'data', 'mofonaina.data.json');
 const YEAR = 2026;
 

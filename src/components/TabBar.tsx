@@ -3,7 +3,7 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useI18n } from '@/lib/i18n';
-import { FONTS } from '@/theme/colors';
+import { FONTS, RADII } from '@/theme/colors';
 import { useTheme } from '@/theme/ThemeProvider';
 import { Icon, IconName } from './Icon';
 
@@ -11,6 +11,7 @@ const TABS: Record<string, { key: string; icon: IconName }> = {
   index: { key: 'tab_today', icon: 'sun' },
   baiboly: { key: 'tab_bible', icon: 'book' },
   fihirana: { key: 'tab_hymnal', icon: 'music' },
+  vavaka: { key: 'tab_prayer', icon: 'pray' },
   tiana: { key: 'tab_favorites', icon: 'heart' },
 };
 
@@ -66,6 +67,9 @@ export function TabBar({ state, navigation }: TabBarProps) {
               />
             </View>
             <Text
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.8}
               style={[
                 styles.label,
                 {
@@ -96,7 +100,10 @@ const styles = StyleSheet.create({
   pill: {
     width: 48,
     height: 32,
-    borderRadius: 16,
+    // Toujours une pilule : rayon >= moitié de la hauteur, garanti quelle que
+    // soit la langue/largeur du label. `overflow: hidden` force le clip natif.
+    borderRadius: RADII.pill,
+    overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
   },

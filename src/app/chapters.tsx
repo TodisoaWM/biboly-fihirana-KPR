@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import { Icon } from '@/components/Icon';
 import { ProfileButton } from '@/components/ProfileButton';
@@ -7,6 +7,7 @@ import { Screen } from '@/components/Screen';
 import { getBook } from '@/data/bible';
 import { useI18n } from '@/lib/i18n';
 import { useSafeBack } from '@/lib/nav';
+import { GRID_GAP, gridCellSize } from '@/lib/grid';
 import { FONTS, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -16,6 +17,8 @@ export default function ChaptersScreen() {
   const { t } = useI18n();
   const router = useRouter();
   const goBack = useSafeBack('/books');
+  const { width } = useWindowDimensions();
+  const cell = gridCellSize(width);
   const { book: bookCode } = useLocalSearchParams<{ book?: string }>();
   const book = getBook(bookCode ?? 'Gen');
   const count = book?.chapters ?? 1;
@@ -31,8 +34,10 @@ export default function ChaptersScreen() {
           <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
         </Pressable>
         <View style={styles.headerCenter}>
-          <Text style={[styles.title, { color: theme.text }]}>{book?.name ?? bookCode}</Text>
-          <Text style={[styles.sub, { color: theme.textFaint }]}>
+          <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7} style={[styles.title, { color: theme.text }]}>
+            {book?.name ?? bookCode}
+          </Text>
+          <Text numberOfLines={1} style={[styles.sub, { color: theme.textFaint }]}>
             {(book ? (book.testament === 'TT' ? t('ot') : t('nt')) : '').toUpperCase()} · {count} {t('chapters_uc')}
           </Text>
         </View>
@@ -47,7 +52,7 @@ export default function ChaptersScreen() {
               onPress={() => open(c)}
               style={({ pressed }) => [
                 styles.cell,
-                { backgroundColor: theme.surface, borderColor: theme.border, opacity: pressed ? 0.6 : 1 },
+                { width: cell, height: cell, backgroundColor: theme.surface, borderColor: theme.border, opacity: pressed ? 0.6 : 1 },
                 cardShadow(theme.shadow, 'sm'),
               ]}
             >
@@ -59,8 +64,6 @@ export default function ChaptersScreen() {
     </Screen>
   );
 }
-
-const CELL = 58;
 
 const styles = StyleSheet.create({
   header: {
@@ -76,14 +79,12 @@ const styles = StyleSheet.create({
   title: { fontFamily: FONTS.display, fontSize: 21 },
   sub: { fontFamily: FONTS.sansBold, fontSize: 10, letterSpacing: 0.5, marginTop: 2 },
   content: { paddingHorizontal: SPACING.xl, paddingVertical: SPACING.sm, paddingBottom: SPACING.xl },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, justifyContent: 'flex-start' },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: GRID_GAP, justifyContent: 'flex-start' },
   cell: {
-    width: CELL,
-    height: CELL,
     borderRadius: 16,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  cellText: { fontFamily: FONTS.display, fontSize: 20 },
+  cellText: { fontFamily: FONTS.display, fontSize: 17 },
 });

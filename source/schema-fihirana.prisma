@@ -3,12 +3,14 @@
 // ---------- FFPM / Fanampiny / Antema (protestant) ----------
 
 model FihiranaProtestant {
-  id        Int      @id @default(autoincrement())
-  recueil   String   // "FFPM" | "Fanampiny" | "Antema"
-  numero    Int       // numéro du chant dans le recueil (ex: 1 pour FFPM 1)
-  titre     String?  // souvent vide dans la source, à défaut affiche "Recueil n°X"
-  auteurs   String[] // liste des auteurs si connus
-  versets   FihiranaProtestantVerset[]
+  id          Int      @id @default(autoincrement())
+  recueil     String   // "FFPM" | "Fanampiny" | "Antema" | "Fifohazana"
+  numero      Int       // numéro du chant dans le recueil (ex: 1 pour FFPM 1)
+  titre       String?  // souvent vide dans la source FFPM, toujours renseigné pour Fifohazana
+  auteurs     String[] // liste des auteurs si connus (vide dans la plupart des cas)
+  commentaire String?  // spécifique à Fifohazana, absent pour FFPM/Fanampiny/Antema
+  chapitre    String?  // référence type "fifohazana::I", spécifique à Fifohazana
+  versets     FihiranaProtestantVerset[]
 
   @@unique([recueil, numero])
   @@map("fihirana_protestant")

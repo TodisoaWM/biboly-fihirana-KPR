@@ -3,7 +3,7 @@
  * build-fihirana.js — fusionne les deux sources Fihirana (usage privé/familial)
  * en un bundle compact pour l'app : src/data/fihirana.data.json
  *
- * Sources (déposées dans claude-code-handoff/) :
+ * Sources (déposées dans source/) :
  *  - fihirana_ffpm_complet.json  : FFPM 814 + Fanampiny 54 + Antema 24 (protestanta)
  *      { recueil, numero, titre, auteurs, versets:[{andininy, tononkira, fiverenany}] }
  *  - fihirana_katolika.json      : 2359 chants, 7 recueils (katolika)
@@ -19,7 +19,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const HANDOFF = path.join(ROOT, 'claude-code-handoff');
+const HANDOFF = path.join(ROOT, 'source');
 const OUT = path.join(ROOT, 'src', 'data', 'fihirana.data.json');
 
 // recueil (source) → clé de collection
@@ -27,6 +27,7 @@ const KEY = {
   FFPM: 'ffpm',
   Fanampiny: 'fanampiny',
   Antema: 'antema',
+  Fifohazana: 'fifohazana',
   'Fihirana Dera': 'dera',
   'Fihirana Hasina': 'hasina',
   'Vavaka sy Hira': 'vavaka',
@@ -41,6 +42,7 @@ const COLLECTIONS_META = [
   { key: 'ffpm', tradition: 'protestanta', name: 'FFPM' },
   { key: 'fanampiny', tradition: 'protestanta', name: 'Fanampiny' },
   { key: 'antema', tradition: 'protestanta', name: 'Antema' },
+  { key: 'fifohazana', tradition: 'protestanta', name: 'Fifohazana' },
   { key: 'dera', tradition: 'katolika', name: 'Fihirana Dera' },
   { key: 'hasina', tradition: 'katolika', name: 'Fihirana Hasina' },
   { key: 'vavaka', tradition: 'katolika', name: 'Vavaka sy Hira' },
@@ -127,6 +129,7 @@ function parseKatolika(lyrics) {
 function main() {
   const ffpm = JSON.parse(fs.readFileSync(path.join(HANDOFF, 'fihirana_ffpm_complet.json'), 'utf8'));
   const kato = JSON.parse(fs.readFileSync(path.join(HANDOFF, 'fihirana_katolika.json'), 'utf8'));
+  const fifo = JSON.parse(fs.readFileSync(path.join(HANDOFF, 'fihirana_fifohazana.json'), 'utf8'));
 
   const hymns = [];
 
@@ -145,6 +148,30 @@ function main() {
     const title = decodeEntities(s.titre || '').trim() || firstLine(verses.find((v) => !v.r)?.t) || `Hira ${s.numero}`;
     hymns.push({
       id: `p-${key}-${s.numero}`,
+      tradition: 'protestanta',
+      title,
+      places: [{ c: key, p: num }],
+      verses,
+    });
+  }
+
+  // Fifohazana (protestanta) — format légèrement différent : `numero` entier,
+  // `auteur` singulier, refrain marqué `fiverenana`, titre préfixé « N. ».
+  for (const s of fifo) {
+    const key = KEY[s.recueil]; // 'fifohazana'
+    if (!key) continue;
+    const num = typeof s.numero === 'number' ? s.numero : parseInt(s.numero, 10);
+    let vn = 0;
+    const verses = (s.versets || []).map((v) => {
+      const t = decodeEntities(v.tononkira).trim();
+      if (v.fiverenana) return { t, r: 1 };
+      vn += 1;
+      return { t, n: typeof v.andininy === 'number' && v.andininy > 0 ? v.andininy : vn };
+    });
+    const cleanTitle = decodeEntities(s.titre || '').replace(/^\s*\d+\s*[.\-)]\s*/, '').trim();
+    const title = cleanTitle || firstLine(verses.find((v) => !v.r)?.t) || `Hira ${num}`;
+    hymns.push({
+      id: `p-${key}-${num}`,
       tradition: 'protestanta',
       title,
       places: [{ c: key, p: num }],
@@ -174,7 +201,7 @@ function main() {
 
   fs.writeFileSync(OUT, JSON.stringify({ collections, hymns }));
   const sizeMB = (fs.statSync(OUT).size / 1024 / 1024).toFixed(1);
-  console.log(`✓ ${hymns.length} chants (${ffpm.length} protestanta + ${kato.length} katolika)`);
+  console.log(`✓ ${hymns.length} chants (${ffpm.length + fifo.length} protestanta + ${kato.length} katolika)`);
   collections.forEach((c) => console.log(`   ${c.name} (${c.tradition}) : ${c.count}`));
   console.log(`→ src/data/fihirana.data.json (${sizeMB} Mo)`);
 }

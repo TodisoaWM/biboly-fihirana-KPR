@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150" width="150" height="150" role="img" aria-label="Chargement — livre qui se feuillette">
+  
+
+  
+  <rect x="2" y="2" width="146" height="146" rx="22" fill="#FBF6EC"></rect>
+
+  
+  <ellipse cx="75" cy="119" rx="52" ry="6" fill="#5A3719" opacity="0.14"></ellipse>
+
+  
+  <rect x="14" y="45" width="116" height="72" rx="5" fill="#CE4E28"></rect>
+  <rect x="14" y="45" width="116" height="72" rx="5" fill="url(#coverSheen)"></rect>
+  
+  <rect x="16" y="43" width="118" height="69" rx="3" fill="#EFE2C8"></rect>
+
+  
+  <g>
+    <rect x="18" y="42" width="53" height="68" rx="3" fill="#FFFDF8"></rect>
+    <rect x="79" y="42" width="53" height="68" rx="3" fill="#FFFDF8"></rect>
+    <g stroke="#BE8C50" stroke-width="1.1" stroke-linecap="round" opacity="0.30">
+      <line x1="25" y1="52" x2="63" y2="52"></line><line x1="25" y1="60" x2="63" y2="60"></line><line x1="25" y1="68" x2="63" y2="68"></line><line x1="25" y1="76" x2="63" y2="76"></line><line x1="25" y1="84" x2="63" y2="84"></line><line x1="25" y1="92" x2="63" y2="92"></line><line x1="25" y1="100" x2="63" y2="100"></line>
+      <line x1="87" y1="52" x2="125" y2="52"></line><line x1="87" y1="60" x2="125" y2="60"></line><line x1="87" y1="68" x2="125" y2="68"></line><line x1="87" y1="76" x2="125" y2="76"></line><line x1="87" y1="84" x2="125" y2="84"></line><line x1="87" y1="92" x2="125" y2="92"></line><line x1="87" y1="100" x2="125" y2="100"></line>
+    </g>
+  </g>
+
+  
+  <rect x="73" y="44" width="4" height="66" fill="#5A3719" opacity="0.12"></rect>
+  <line x1="75" y1="48" x2="75" y2="106" stroke="#E3B341" stroke-width="1.6" stroke-linecap="round"></line>
+
+  
+  <g class="leaf leaf1">
+    <rect x="76" y="42" width="53" height="68" rx="3" fill="#FFFEFA"></rect>
+    <g stroke="#BE8C50" stroke-width="1.1" stroke-linecap="round" opacity="0.30">
+      <line x1="83" y1="52" x2="122" y2="52"></line><line x1="83" y1="60" x2="122" y2="60"></line><line x1="83" y1="68" x2="122" y2="68"></line><line x1="83" y1="76" x2="122" y2="76"></line><line x1="83" y1="84" x2="122" y2="84"></line><line x1="83" y1="92" x2="122" y2="92"></line><line x1="83" y1="100" x2="122" y2="100"></line>
+    </g>
+    <rect class="shade shade1" x="76" y="42" width="53" height="68" rx="3" fill="url(#foldShade)"></rect>
+  </g>
+  
+  <g class="leaf leaf2">
+    <rect x="76" y="42" width="53" height="68" rx="3" fill="#FFFEFA"></rect>
+    <g stroke="#BE8C50" stroke-width="1.1" stroke-linecap="round" opacity="0.30">
+      <line x1="83" y1="52" x2="122" y2="52"></line><line x1="83" y1="60" x2="122" y2="60"></line><line x1="83" y1="68" x2="122" y2="68"></line><line x1="83" y1="76" x2="122" y2="76"></line><line x1="83" y1="84" x2="122" y2="84"></line><line x1="83" y1="92" x2="122" y2="92"></line><line x1="83" y1="100" x2="122" y2="100"></line>
+    </g>
+    <rect class="shade shade2" x="76" y="42" width="53" height="68" rx="3" fill="url(#foldShade)"></rect>
+  </g>
+
+  <defs>
+    <linearGradient id="coverSheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E06A3C"></stop>
+      <stop offset="1" stop-color="#CE4E28"></stop>
+    </linearGradient>
+    <linearGradient id="foldShade" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0" stop-color="#78502A"></stop>
+      <stop offset="0.55" stop-color="#78502A" stop-opacity="0"></stop>
+    </linearGradient>
+  </defs>
+</svg>

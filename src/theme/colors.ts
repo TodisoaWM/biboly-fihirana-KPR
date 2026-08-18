@@ -131,8 +131,11 @@ export const SPACING = {
 } as const;
 
 export const FONTS = {
-  display: 'Fraunces_600SemiBold',
-  displayMedium: 'Fraunces_500Medium',
+  display: 'DMSans_600SemiBold',
+  displayMedium: 'DMSans_500Medium',
+  displayBold: 'DMSans_700Bold',
+  /** Écriture manuscrite (verset du héros) */
+  hand: 'EduVICWANTHand_500Medium',
   sans: 'NunitoSans_400Regular',
   sansSemi: 'NunitoSans_600SemiBold',
   sansBold: 'NunitoSans_700Bold',

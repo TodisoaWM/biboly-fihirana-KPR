@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Baiboly & Fihirana K&PR",
+    "name": "Baiboly sy Fihirana KPR",
     "slug": "mofonaina",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -28,18 +28,25 @@
     },
     "plugins": [
       "expo-router",
+      "expo-notifications",
       [
         "expo-splash-screen",
         {
           "backgroundColor": "#2B7888",
-          "image": "./assets/images/iconBaiboly.png",
-          "imageWidth": 76
+          "image": "./assets/images/couverture/couverture.png",
+          "resizeMode": "cover"
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "9df692da-fe08-4bde-8fbe-23e2e442cd3f"
+      }
     }
   }
 }

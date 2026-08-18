@@ -1,79 +1,82 @@
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useMemo, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
 
 import { Icon } from '@/components/Icon';
 import { ProfileButton } from '@/components/ProfileButton';
 import { Screen } from '@/components/Screen';
-import { Book, BOOKS, getBook, normalize } from '@/data/bible';
+import { Book, BOOKS, getBook, getChapter, normalize } from '@/data/bible';
+import { GRID_GAP, gridCellSize } from '@/lib/grid';
 import { useI18n } from '@/lib/i18n';
 import { useSafeBack } from '@/lib/nav';
 import { FONTS, RADII, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
-type Field = 'chapter' | 'v1' | 'v2';
+type Step = 'chapter' | 'v1' | 'v2';
 
 export default function PickerScreen() {
   const { theme } = useTheme();
   const { t } = useI18n();
   const router = useRouter();
   const goBack = useSafeBack('/baiboly');
+  const { width } = useWindowDimensions();
+  const cell = gridCellSize(width);
 
   const [bookCode, setBookCode] = useState<string | null>(null);
   const [query, setQuery] = useState('');
-  const [chapter, setChapter] = useState('');
-  const [v1, setV1] = useState('');
-  const [v2, setV2] = useState('');
-  const [active, setActive] = useState<Field>('chapter');
-  const [error, setError] = useState('');
+  const [chapter, setChapter] = useState<number | null>(null);
+  const [v1, setV1] = useState<number | null>(null);
+  const [v2, setV2] = useState<number | null>(null);
 
   const book = bookCode ? getBook(bookCode) : null;
 
+  // Nombre d'andininy du chapitre choisi (dernier numéro de verset réel).
+  const verseMax = useMemo(() => {
+    if (!book || chapter == null) return 0;
+    const verses = getChapter(book.code, chapter).verses;
+    return verses.length ? verses[verses.length - 1].n : 0;
+  }, [book, chapter]);
+
   const reset = () => {
-    setChapter('');
-    setV1('');
-    setV2('');
-    setActive('chapter');
-    setError('');
+    setChapter(null);
+    setV1(null);
+    setV2(null);
   };
   const toBooks = () => {
     setBookCode(null);
     reset();
+    setQuery('');
   };
 
-  const get = (f: Field) => (f === 'chapter' ? chapter : f === 'v1' ? v1 : v2);
-  const set = (f: Field, val: string) => (f === 'chapter' ? setChapter(val) : f === 'v1' ? setV1(val) : setV2(val));
+  // Étape courante : on choisit d'abord le toko, puis v1, puis v2.
+  const step: Step = chapter == null ? 'chapter' : v1 == null ? 'v1' : 'v2';
 
-  const pressDigit = (d: string) => {
-    setError('');
-    const cur = get(active);
-    if (cur.length >= 3) return;
-    set(active, cur + d);
+  const pick = (n: number) => {
+    if (step === 'chapter') {
+      setChapter(n);
+      setV1(null);
+      setV2(null);
+    } else if (step === 'v1') {
+      setV1(n);
+      setV2(null);
+    } else {
+      setV2(n);
+    }
   };
 
-  const advance = () => {
-    setError('');
-    if (active === 'chapter' && chapter) setActive('v1');
-    else if (active === 'v1') setActive('v2');
+  // Le ✕ efface le dernier élément choisi (v2 → v1 → toko → retour aux livres).
+  const stepBack = () => {
+    if (v2 != null) setV2(null);
+    else if (v1 != null) setV1(null);
+    else if (chapter != null) setChapter(null);
+    else toBooks();
   };
 
-  const pressDelete = () => {
-    setError('');
-    const cur = get(active);
-    if (cur.length > 0) {
-      set(active, cur.slice(0, -1));
-    } else if (active === 'v2') setActive('v1');
-    else if (active === 'v1') setActive('chapter');
-    else toBooks(); // rien à supprimer sur le chapitre → retour au choix du livre
-  };
-
-  const validate = () => {
-    if (!book || !chapter) return setError(t('err_chapter'));
-    const ch = parseInt(chapter, 10);
-    if (ch < 1 || ch > book.chapters) return setError(`${t('chapter_word')} 1–${book.chapters}`);
-    let ref = `${book.code} ${ch}`;
-    if (v1) ref += `.${v1}` + (v2 ? `-${v2}` : '');
+  const read = () => {
+    if (!book || chapter == null) return;
+    let ref = `${book.code} ${chapter}`;
+    if (v1 != null) ref += `.${v1}` + (v2 != null && v2 > v1 ? `-${v2}` : '');
     router.push({ pathname: '/passage', params: { ref } });
   };
 
@@ -96,8 +99,8 @@ export default function PickerScreen() {
         <View style={[styles.bookNum, { backgroundColor: theme.surfaceAlt }]}>
           <Text style={[styles.bookNumText, { color: theme.textMuted }]}>{b.id}</Text>
         </View>
-        <Text style={[styles.bookName, { color: theme.text }]}>{b.name}</Text>
-        <Text style={[styles.bookCh, { color: theme.textFaint }]}>{b.chapters} {t('chapters_lc')}</Text>
+        <Text style={[styles.bookName, { color: theme.text }]} numberOfLines={1}>{b.name}</Text>
+        <Text style={[styles.bookCh, { color: theme.textFaint }]} numberOfLines={1}>{b.chapters} {t('chapters_lc')}</Text>
         <Icon name="chevron-right" size={16} color={theme.textFaint} strokeWidth={2.2} />
       </Pressable>
     );
@@ -133,41 +136,25 @@ export default function PickerScreen() {
     );
   }
 
-  // ─────────────── Étape 2 : pavé numérique ───────────────
-  const Slot = ({ f, val, placeholder }: { f: Field; val: string; placeholder: string }) => (
-    <Pressable onPress={() => setActive(f)}>
-      <Text
-        style={[
-          styles.slot,
-          { color: val ? theme.text : theme.textFaint },
-          active === f && { color: theme.primary, borderBottomColor: theme.primary, borderBottomWidth: 2 },
-        ]}
-      >
-        {val || placeholder}
-      </Text>
-    </Pressable>
-  );
+  // ─────────────── Étape 2 : grille des toko / andininy ───────────────
+  // Numéros affichés selon l'étape.
+  const numbers: number[] =
+    step === 'chapter'
+      ? Array.from({ length: book.chapters }, (_, i) => i + 1)
+      : step === 'v1'
+        ? Array.from({ length: verseMax }, (_, i) => i + 1)
+        : // v2 : de v1+1 jusqu'au dernier andininy
+          Array.from({ length: Math.max(0, verseMax - (v1 ?? 0)) }, (_, i) => (v1 ?? 0) + 1 + i);
 
-  const Key = ({ label, onPress, kind }: { label: string; onPress: () => void; kind?: 'del' | 'next' }) => (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.key,
-        { backgroundColor: kind === 'next' ? theme.tabActiveBg : theme.surface, borderColor: theme.border, opacity: pressed ? 0.7 : 1 },
-        cardShadow(theme.shadow, 'sm'),
-      ]}
-    >
-      <Text
-        style={[
-          styles.keyText,
-          kind === 'del' && styles.keyTextSmall,
-          { color: kind === 'del' ? theme.accent : kind === 'next' ? theme.primary : theme.text },
-        ]}
-      >
-        {label}
-      </Text>
-    </Pressable>
-  );
+  const gridLabel =
+    step === 'chapter' ? t('pick_chapter_label') : step === 'v1' ? t('pick_verse_label') : t('pick_upto_label');
+
+  // Libellé de la puce : « Matio 3 : 4 - 13 »
+  const chip =
+    book.name +
+    (chapter != null ? ` ${chapter}` : '') +
+    (v1 != null ? ` : ${v1}` : '') +
+    (v2 != null ? ` - ${v2}` : '');
 
   return (
     <Screen edges={['top']}>
@@ -180,48 +167,48 @@ export default function PickerScreen() {
       </View>
 
       <View style={styles.pickerBody}>
-        {/* Champ d'affichage */}
+        {/* Puce de sélection courante + effacer */}
         <View style={styles.displayRow}>
           <View style={[styles.display, { backgroundColor: theme.surface, borderColor: theme.border }, cardShadow(theme.shadow, 'sm')]}>
-            <Text style={[styles.bookLabel, { color: theme.text }]} numberOfLines={1}>
-              {book.name}
+            <Icon name="book" size={18} color={theme.primary} strokeWidth={1.8} />
+            <Text style={[styles.chipText, { color: theme.text }]} numberOfLines={1}>
+              {chip}
             </Text>
-            <View style={styles.slots}>
-              <Slot f="chapter" val={chapter} placeholder="—" />
-              <Text style={[styles.sep, { color: theme.textFaint }]}>:</Text>
-              <Slot f="v1" val={v1} placeholder="—" />
-              <Text style={[styles.sep, { color: theme.textFaint }]}>-</Text>
-              <Slot f="v2" val={v2} placeholder="—" />
-            </View>
           </View>
-          <Pressable onPress={toBooks} style={styles.xBtn} hitSlop={8}>
+          <Pressable onPress={stepBack} style={[styles.xBtn, { backgroundColor: theme.surface, borderColor: theme.border }]} hitSlop={6}>
             <Text style={[styles.xText, { color: theme.textMuted }]}>✕</Text>
           </Pressable>
         </View>
 
-        <Text style={[styles.hint, { color: error ? theme.accent : theme.textFaint }]}>
-          {error ||
-            (active === 'chapter'
-              ? t('hint_chapter')
-              : active === 'v1'
-                ? t('hint_v1')
-                : t('hint_v2'))}
-        </Text>
+        <Text style={[styles.gridLabel, { color: theme.text }]}>{gridLabel}</Text>
 
-        {/* Pavé */}
-        <View style={styles.pad}>
-          {['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'].map((d) => (
-            <Key key={d} label={d} onPress={() => pressDigit(d)} />
-          ))}
-          <Key label="→" onPress={advance} kind="next" />
-          <Key label="AMAFA" onPress={pressDelete} kind="del" />
-        </View>
+        <ScrollView contentContainerStyle={styles.gridScroll} showsVerticalScrollIndicator={false}>
+          <View style={styles.grid}>
+            {numbers.map((n) => (
+              <Pressable
+                key={n}
+                onPress={() => pick(n)}
+                style={({ pressed }) => [
+                  styles.cell,
+                  { width: cell, height: cell, backgroundColor: theme.surfaceAlt, borderColor: theme.border, opacity: pressed ? 0.55 : 1 },
+                ]}
+              >
+                <Text style={[styles.cellText, { color: theme.text }]}>{n}</Text>
+              </Pressable>
+            ))}
+          </View>
+          {step === 'v1' && (
+            <Text style={[styles.optional, { color: theme.textFaint }]}>{t('pick_optional_verse')}</Text>
+          )}
+        </ScrollView>
 
+        {/* Lire : toko entier, un andininy, ou une plage — selon la sélection */}
         <Pressable
-          onPress={validate}
+          onPress={read}
           style={({ pressed }) => [styles.okBtn, { backgroundColor: theme.primary, opacity: pressed ? 0.85 : 1 }, cardShadow(theme.primary, 'md')]}
         >
-          <Text style={[styles.okText, { color: theme.onPrimary }]}>OK</Text>
+          <Icon name="book" size={19} color={theme.onPrimary} strokeWidth={1.9} />
+          <Text style={[styles.okText, { color: theme.onPrimary }]}>{t('read_btn')}</Text>
         </Pressable>
       </View>
     </Screen>
@@ -260,35 +247,42 @@ const styles = StyleSheet.create({
   bookNumText: { fontFamily: FONTS.sansExtra, fontSize: 12 },
   bookName: { fontFamily: FONTS.sansBold, fontSize: 15, flex: 1 },
   bookCh: { fontFamily: FONTS.sansSemi, fontSize: 11 },
-  // keypad step
+  // grid step
   pickerBody: { flex: 1, paddingHorizontal: SPACING.xl, paddingTop: 10 },
   displayRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  display: { flex: 1, borderRadius: RADII.pill, borderWidth: 1, paddingVertical: 14, paddingHorizontal: 22, flexDirection: 'row', alignItems: 'center', gap: 12 },
-  bookLabel: { fontFamily: FONTS.display, fontSize: 22, flexShrink: 1 },
-  slots: { flexDirection: 'row', alignItems: 'flex-end', gap: 6 },
-  slot: { fontFamily: FONTS.display, fontSize: 24, minWidth: 24, textAlign: 'center' },
-  sep: { fontFamily: FONTS.display, fontSize: 22 },
-  xBtn: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  xText: { fontFamily: FONTS.sansBold, fontSize: 22 },
-  hint: { fontFamily: FONTS.sansSemi, fontSize: 12.5, textAlign: 'center', marginTop: 14 },
-  pad: {
-    marginTop: 16,
+  display: {
+    flex: 1,
+    borderRadius: RADII.pill,
+    borderWidth: 1,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 10,
   },
-  key: {
-    width: '22%',
-    aspectRatio: 1.35,
+  chipText: { fontFamily: FONTS.display, fontSize: 22, flexShrink: 1 },
+  xBtn: { width: 44, height: 44, borderRadius: 22, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  xText: { fontFamily: FONTS.sansBold, fontSize: 20 },
+  gridLabel: { fontFamily: FONTS.display, fontSize: 20, marginTop: 18, marginBottom: 4 },
+  gridScroll: { paddingTop: 8, paddingBottom: 12 },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: GRID_GAP, justifyContent: 'flex-start' },
+  cell: {
     borderRadius: 18,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  keyText: { fontFamily: FONTS.sansExtra, fontSize: 22 },
-  keyTextSmall: { fontSize: 13, letterSpacing: 0.5 },
-  okBtn: { marginTop: 14, height: 56, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
+  cellText: { fontFamily: FONTS.display, fontSize: 17 },
+  optional: { fontFamily: FONTS.sansSemi, fontSize: 12.5, textAlign: 'center', marginTop: 18 },
+  okBtn: {
+    marginTop: 10,
+    marginBottom: 6,
+    height: 56,
+    borderRadius: 18,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+  },
   okText: { fontFamily: FONTS.sansExtra, fontSize: 18, letterSpacing: 1 },
 });
-

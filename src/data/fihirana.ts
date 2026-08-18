@@ -130,3 +130,34 @@ export function stanzaPreview(h: Hymn): string {
 
 /** Dernier chant ouvert (mis en avant sur l'écran Fihirana). */
 export const RECENT_HYMN_ID = 'p-ffpm-1';
+
+export type HymnSuggestion = { id: string; title: string; page: number; collectionKey: string; tradition: Tradition };
+
+/** Graine stable par jour (les propositions changent chaque jour). */
+function daySeed(d = new Date()): number {
+  return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86_400_000);
+}
+
+/** Choisit un chant d'une tradition donnée, de façon déterministe (graine). */
+function pickSuggestion(tradition: Tradition, seed: number, allowKeys?: string[]): HymnSuggestion | undefined {
+  let colls = COLLECTIONS.filter((c) => c.tradition === tradition && c.count > 0);
+  if (allowKeys) colls = colls.filter((c) => allowKeys.includes(c.key));
+  if (!colls.length) return undefined;
+  const coll = colls[seed % colls.length];
+  const items = getHymnsByCollection(coll.key);
+  if (!items.length) return undefined;
+  const it = items[(seed * 7 + 3) % items.length];
+  return { id: it.id, title: it.title, page: it.page, collectionKey: coll.key, tradition };
+}
+
+/**
+ * Proposition du jour : un chant protestant + un chant catholique.
+ * Rotation quotidienne (stable dans la journée). Passer une graine pour varier.
+ * Côté protestant : uniquement FFPM et Fihirana Fanampiny (pas Antema).
+ */
+export function suggestHymns(seed = daySeed()): { protestanta?: HymnSuggestion; katolika?: HymnSuggestion } {
+  return {
+    protestanta: pickSuggestion('protestanta', seed, ['ffpm', 'fanampiny']),
+    katolika: pickSuggestion('katolika', seed + 13),
+  };
+}
