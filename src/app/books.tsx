@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
+import { HomeButton } from '@/components/HomeButton';
 import { Icon } from '@/components/Icon';
 import { ProfileButton } from '@/components/ProfileButton';
 import { Screen } from '@/components/Screen';
@@ -52,9 +53,12 @@ export default function BooksScreen() {
   return (
     <Screen>
       <View style={styles.header}>
-        <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
-        </Pressable>
+        <View style={styles.leftCluster}>
+          <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+            <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
+          </Pressable>
+          <HomeButton />
+        </View>
 
         {searching ? (
           <TextInput
@@ -117,6 +121,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   closeX: { fontFamily: FONTS.sansBold, fontSize: 17 },
   title: { flex: 1, fontFamily: FONTS.display, fontSize: 21 },
   searchInput: { flex: 1, fontFamily: FONTS.sansSemi, fontSize: 16, paddingVertical: 4, borderBottomWidth: 2 },

@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { FavButton } from '@/components/FavButton';
+import { HomeButton } from '@/components/HomeButton';
 import { Icon } from '@/components/Icon';
 import { ProfileButton } from '@/components/ProfileButton';
 import { ReaderToolbar } from '@/components/ReaderToolbar';
@@ -45,9 +46,12 @@ export default function PassageScreen() {
   return (
     <Screen edges={['top']}>
       <View style={[styles.topBar, { borderBottomColor: theme.border }]}>
-        <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
-        </Pressable>
+        <View style={styles.leftCluster}>
+          <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+            <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
+          </Pressable>
+          <HomeButton />
+        </View>
         <Text style={[styles.topTitle, { color: theme.text }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>
           {reading?.label ?? ref}
         </Text>
@@ -105,6 +109,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   topTitle: { flex: 1, textAlign: 'center', fontFamily: FONTS.display, fontSize: 19 },
   rightCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   content: { paddingHorizontal: 26, paddingTop: 18, paddingBottom: 40 },

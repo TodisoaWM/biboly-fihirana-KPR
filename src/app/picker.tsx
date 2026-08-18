@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
 
+import { HomeButton } from '@/components/HomeButton';
 import { Icon } from '@/components/Icon';
 import { ProfileButton } from '@/components/ProfileButton';
 import { Screen } from '@/components/Screen';
@@ -108,9 +109,12 @@ export default function PickerScreen() {
     return (
       <Screen>
         <View style={styles.header}>
-          <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-            <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
-          </Pressable>
+          <View style={styles.leftCluster}>
+            <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+              <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
+            </Pressable>
+            <HomeButton />
+          </View>
           <Text style={[styles.title, { color: theme.text }]}>{t('choose_book')}</Text>
           <ProfileButton />
         </View>
@@ -159,11 +163,14 @@ export default function PickerScreen() {
   return (
     <Screen edges={['top']}>
       <View style={styles.header}>
-        <Pressable onPress={toBooks} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
-        </Pressable>
+        <View style={styles.leftCluster}>
+          <Pressable onPress={toBooks} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+            <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
+          </Pressable>
+          <HomeButton />
+        </View>
         <Text style={[styles.title, { color: theme.text }]}>{t('chapter_verse')}</Text>
-        <View style={{ width: 40 }} />
+        <View style={{ width: 88 }} />
       </View>
 
       <View style={styles.pickerBody}>
@@ -225,6 +232,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   title: { fontFamily: FONTS.display, fontSize: 21 },
   // book step
   search: {

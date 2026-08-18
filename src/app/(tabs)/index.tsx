@@ -8,6 +8,7 @@ import { Screen } from '@/components/Screen';
 import { getReading } from '@/data/bible';
 import { getHymn, hymnRef, stanzaPreview, suggestHymns, type HymnSuggestion } from '@/data/fihirana';
 import { getMofonainaForDate } from '@/data/mofonaina';
+import { birthdayMessage, birthdaysOn } from '@/lib/birthdays';
 import { useDailyTitle } from '@/lib/dailyTitle';
 import { useI18n } from '@/lib/i18n';
 import { useProfile } from '@/lib/profile';
@@ -18,11 +19,15 @@ import { useTheme } from '@/theme/ThemeProvider';
 export default function AndroanyScreen() {
   const { theme, heroImage, heroBlur } = useTheme();
   const router = useRouter();
-  const { t, weekday, dayLabel } = useI18n();
+  const { t, weekday, dayLabel, language } = useI18n();
   const profile = useProfile();
   const firstName = profile.name.trim().split(/\s+/)[0];
 
   const dailyTitle = useDailyTitle();
+  const todaysBirthdays = birthdaysOn(new Date());
+  const isBirthday = todaysBirthdays.length > 0;
+  // Un anniversaire aujourd'hui remplace le titre quotidien habituel sur le hero.
+  const heroText = isBirthday ? birthdayMessage('today', todaysBirthdays, language) : dailyTitle;
   const entry = getMofonainaForDate();
   const reading = getReading(entry.reference);
   const referenceLabel = reading?.label ?? entry.reference;
@@ -80,8 +85,21 @@ export default function AndroanyScreen() {
             style={StyleSheet.absoluteFill}
             pointerEvents="none"
           />
-          <View style={styles.heroTitleWrap} pointerEvents="none">
-            <Text style={styles.heroTitle}>{dailyTitle}</Text>
+          <View style={[styles.heroTitleWrap, isBirthday && styles.birthdayTitleWrap]} pointerEvents="none">
+            {isBirthday && (
+              <View style={[styles.birthdayBadge, { backgroundColor: theme.gold }]}>
+                <Icon name="gift" size={13} color="#4A2F12" strokeWidth={2} />
+                <Text style={styles.birthdayBadgeText}>{t('birthday_badge')}</Text>
+              </View>
+            )}
+            <Text
+              style={[styles.heroTitle, isBirthday && styles.birthdayTitle, isBirthday && { color: theme.gold }]}
+              numberOfLines={isBirthday ? 3 : 2}
+              adjustsFontSizeToFit
+              minimumFontScale={0.6}
+            >
+              {heroText}
+            </Text>
           </View>
         </View>
 
@@ -185,6 +203,24 @@ const styles = StyleSheet.create({
   heroIconLeft: { position: 'absolute', top: 12, left: 16, opacity: 0.9, transform: [{ rotate: '8deg' }] },
   heroIconRight: { position: 'absolute', top: 16, right: 18, opacity: 0.85 },
   heroTitleWrap: { position: 'absolute', left: 20, right: 20, bottom: 18 },
+  // Anniversaire : badge ancré à position FIXE depuis le haut du hero (sous les
+  // icônes décoratives), pas depuis le bas — sur un écran étroit, le texte prend
+  // plus de lignes et un ancrage bas ferait remonter le badge hors du cadre (clip
+  // par overflow:hidden). Ici le badge reste toujours visible ; seul le texte
+  // s'étend vers le bas, contenu par adjustsFontSizeToFit/numberOfLines.
+  birthdayTitleWrap: { top: 44, bottom: 10, justifyContent: 'flex-start' },
+  birthdayBadge: {
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    marginBottom: 6,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: RADII.pill,
+  },
+  birthdayBadgeText: { fontFamily: FONTS.sansExtra, fontSize: 10.5, letterSpacing: 0.8, color: '#4A2F12' },
+  birthdayTitle: { fontFamily: FONTS.display, fontSize: 22, lineHeight: 27 },
   heroTitle: {
     fontFamily: FONTS.hand,
     fontSize: 26,

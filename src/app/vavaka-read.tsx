@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, { SlideInDown } from 'react-native-reanimated';
 
+import { HomeButton } from '@/components/HomeButton';
 import { Icon } from '@/components/Icon';
 import { ProfileButton } from '@/components/ProfileButton';
 import { ReaderToolbar } from '@/components/ReaderToolbar';
@@ -47,9 +48,12 @@ export default function VavakaReadScreen() {
     return (
       <Screen>
         <View style={styles.header}>
-          <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-            <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
-          </Pressable>
+          <View style={styles.leftCluster}>
+            <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+              <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
+            </Pressable>
+            <HomeButton />
+          </View>
         </View>
         <Text style={[styles.notFound, { color: theme.textFaint }]}>{t('hymn_not_found')}</Text>
       </Screen>
@@ -85,9 +89,12 @@ export default function VavakaReadScreen() {
   return (
     <Screen edges={['top']}>
       <View style={styles.header}>
-        <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
-        </Pressable>
+        <View style={styles.leftCluster}>
+          <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+            <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
+          </Pressable>
+          <HomeButton />
+        </View>
         <ProfileButton />
       </View>
 
@@ -164,6 +171,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   notFound: { fontFamily: FONTS.sansSemi, fontSize: 15, textAlign: 'center', marginTop: 50 },
   content: { paddingHorizontal: SPACING.xl, paddingTop: 6, paddingBottom: 50 },
   badge: { alignSelf: 'flex-start', paddingVertical: 5, paddingHorizontal: 12, borderRadius: RADII.pill },

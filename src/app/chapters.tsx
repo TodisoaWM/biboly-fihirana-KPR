@@ -1,6 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
+import { HomeButton } from '@/components/HomeButton';
 import { Icon } from '@/components/Icon';
 import { ProfileButton } from '@/components/ProfileButton';
 import { Screen } from '@/components/Screen';
@@ -30,9 +31,12 @@ export default function ChaptersScreen() {
   return (
     <Screen>
       <View style={styles.header}>
-        <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
-        </Pressable>
+        <View style={styles.leftCluster}>
+          <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+            <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
+          </Pressable>
+          <HomeButton />
+        </View>
         <View style={styles.headerCenter}>
           <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7} style={[styles.title, { color: theme.text }]}>
             {book?.name ?? bookCode}
@@ -75,6 +79,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   headerCenter: { alignItems: 'center', flex: 1 },
   title: { fontFamily: FONTS.display, fontSize: 21 },
   sub: { fontFamily: FONTS.sansBold, fontSize: 10, letterSpacing: 0.5, marginTop: 2 },

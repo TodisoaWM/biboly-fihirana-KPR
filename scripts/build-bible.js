@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 /**
- * build-bible.js — transforme le dump MG'65 (scripts/tmp/Bible_MG65.json,
- * domaine public : « Ny Baiboly Malagasy, 1865 ») en un bundle compact pour
- * l'app : src/data/bible.data.json  { books:[...], text:{ code:[[verset...]] } }
+ * build-bible.js — transforme la Baiboly MG1865 corrigée (source/verses_complete_66books.json,
+ * décodée depuis l'app « Baiboly & Fihirana Protestanta », cf. source/RAPPORT_verification_bible.md)
+ * en un bundle compact pour l'app : src/data/bible.data.json  { books:[...], text:{ code:[[verset...]] } }
  *
  * Le texte des versets garde les balises <n>[sous-titre]</n> (rendues comme
  * intertitres côté écran de lecture).
@@ -14,86 +14,74 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const SRC = path.join(ROOT, 'scripts', 'tmp', 'Bible_MG65.json');
+const SRC = path.join(ROOT, 'source', 'verses_complete_66books.json');
 const OUT = path.join(ROOT, 'src', 'data', 'bible.data.json');
-const SRC_URL = 'https://raw.githubusercontent.com/Rohan29-AN/MG-Bible-65/main/Bible_MG65.json';
 
-async function ensureSource() {
-  if (fs.existsSync(SRC)) return;
-  console.log('Téléchargement du texte MG 1865 (domaine public)…');
-  fs.mkdirSync(path.dirname(SRC), { recursive: true });
-  const res = await fetch(SRC_URL);
-  if (!res.ok) throw new Error(`Téléchargement échoué: HTTP ${res.status}`);
-  fs.writeFileSync(SRC, Buffer.from(await res.arrayBuffer()));
-}
-
-// num MyBible → { code (référence), name (affichage) }. Noms malgaches usuels.
+// num MyBible → { code (référence), name (affichage), abbr (abréviation courte) }.
 const CANON = {
-  10: ['Gen', 'Genesisy'], 20: ['Eks', 'Eksodosy'], 30: ['Lev', 'Levitikosy'],
-  40: ['Nom', 'Nomery'], 50: ['Deo', 'Deoteronomia'], 60: ['Jos', 'Josoa'],
-  70: ['Mpits', 'Mpitsara'], 80: ['Rota', 'Rota'], 90: ['1Sam', '1 Samoela'],
-  100: ['2Sam', '2 Samoela'], 110: ['1Mpan', '1 Mpanjaka'], 120: ['2Mpan', '2 Mpanjaka'],
-  130: ['1Tan', '1 Tantara'], 140: ['2Tan', '2 Tantara'], 150: ['Ezra', 'Ezra'],
-  160: ['Neh', 'Nehemia'], 190: ['Est', 'Estera'], 220: ['Joba', 'Joba'],
-  230: ['Sal', 'Salamo'], 240: ['Ohab', 'Ohabolana'], 250: ['Mpit', 'Mpitoriteny'],
-  260: ['Ton', "Tononkiran'i Solomona"], 290: ['Isa', 'Isaia'], 300: ['Jer', 'Jeremia'],
-  310: ['Fita', 'Fitomaniana'], 330: ['Ezek', 'Ezekiela'], 340: ['Dan', 'Daniela'],
-  350: ['Hos', 'Hosea'], 360: ['Joe', 'Joela'], 370: ['Amo', 'Amosa'],
-  380: ['Oba', 'Obadia'], 390: ['Jon', 'Jona'], 400: ['Mika', 'Mika'],
-  410: ['Nah', 'Nahoma'], 420: ['Hab', 'Habakoka'], 430: ['Zef', 'Zefania'],
-  440: ['Hag', 'Hagay'], 450: ['Zak', 'Zakaria'], 460: ['Mal', 'Malakia'],
-  470: ['Mat', 'Matio'], 480: ['Mar', 'Marka'], 490: ['Lio', 'Lioka'],
-  500: ['Jao', 'Jaona'], 510: ['Asa', "Asan'ny Apostoly"], 520: ['Rom', 'Romana'],
-  530: ['1Kor', '1 Korintiana'], 540: ['2Kor', '2 Korintiana'], 550: ['Gal', 'Galatiana'],
-  560: ['Efe', 'Efesiana'], 570: ['Fil', 'Filipiana'], 580: ['Kol', 'Kolosiana'],
-  590: ['1Tes', '1 Tesaloniana'], 600: ['2Tes', '2 Tesaloniana'], 610: ['1Tim', '1 Timoty'],
-  620: ['2Tim', '2 Timoty'], 630: ['Tit', 'Titosy'], 640: ['Flm', 'Filemona'],
-  650: ['Heb', 'Hebreo'], 660: ['Jak', 'Jakoba'], 670: ['1Pet', '1 Petera'],
-  680: ['2Pet', '2 Petera'], 690: ['1Jao', '1 Jaona'], 700: ['2Jao', '2 Jaona'],
-  710: ['3Jao', '3 Jaona'], 720: ['Joda', 'Joda'], 730: ['Apok', 'Apokalypsy'],
+  10: ['Gen', 'Genesisy', 'Gen'], 20: ['Eks', 'Eksodosy', 'Eks'], 30: ['Lev', 'Levitikosy', 'Lev'],
+  40: ['Nom', 'Nomery', 'Nom'], 50: ['Deo', 'Deoteronomia', 'Deo'], 60: ['Jos', 'Josoa', 'Jos'],
+  70: ['Mpits', 'Mpitsara', 'Mpi'], 80: ['Rota', 'Rota', 'Rot'], 90: ['1Sam', '1 Samoela', '1Sa'],
+  100: ['2Sam', '2 Samoela', '2Sa'], 110: ['1Mpan', '1 Mpanjaka', '1Mp'], 120: ['2Mpan', '2 Mpanjaka', '2Mp'],
+  130: ['1Tan', '1 Tantara', '1Ta'], 140: ['2Tan', '2 Tantara', '2Ta'], 150: ['Ezra', 'Ezra', 'Ezr'],
+  160: ['Neh', 'Nehemia', 'Neh'], 190: ['Est', 'Estera', 'Est'], 220: ['Joba', 'Joba', 'Job'],
+  230: ['Sal', 'Salamo', 'Slm'], 240: ['Ohab', 'Ohabolana', 'Ohab'], 250: ['Mpit', 'Mpitoriteny', 'Mpit'],
+  260: ['Ton', "Tononkiran'i Solomona", 'Ton'], 290: ['Isa', 'Isaia', 'Isa'], 300: ['Jer', 'Jeremia', 'Jer'],
+  310: ['Fita', 'Fitomaniana', 'Fit'], 330: ['Ezek', 'Ezekiela', 'Ezek'], 340: ['Dan', 'Daniela', 'Dan'],
+  350: ['Hos', 'Hosea', 'Hos'], 360: ['Joe', 'Joela', 'Joel'], 370: ['Amo', 'Amosa', 'Amos'],
+  380: ['Oba', 'Obadia', 'Obad'], 390: ['Jon', 'Jona', 'Jona'], 400: ['Mika', 'Mika', 'Mika'],
+  410: ['Nah', 'Nahoma', 'Nah'], 420: ['Hab', 'Habakoka', 'Hab'], 430: ['Zef', 'Zefania', 'Zef'],
+  440: ['Hag', 'Hagay', 'Hag'], 450: ['Zak', 'Zakaria', 'Zak'], 460: ['Mal', 'Malakia', 'Mal'],
+  470: ['Mat', 'Matio', 'Mat'], 480: ['Mar', 'Marka', 'Mark'], 490: ['Lio', 'Lioka', 'Liok'],
+  500: ['Jao', 'Jaona', 'Joan'], 510: ['Asa', "Asan'ny Apostoly", 'Asan'], 520: ['Rom', 'Romana', 'Rom'],
+  530: ['1Kor', '1 Korintiana', '1Kor'], 540: ['2Kor', '2 Korintiana', '2Kor'], 550: ['Gal', 'Galatiana', 'Gal'],
+  560: ['Efe', 'Efesiana', 'Efez'], 570: ['Fil', 'Filipiana', 'Fil'], 580: ['Kol', 'Kolosiana', 'Kol'],
+  590: ['1Tes', '1 Tesaloniana', '1Tes'], 600: ['2Tes', '2 Tesaloniana', '2Tes'], 610: ['1Tim', '1 Timoty', '1Tim'],
+  620: ['2Tim', '2 Timoty', '2Tim'], 630: ['Tit', 'Titosy', 'Tito'], 640: ['Flm', 'Filemona', 'Flm'],
+  650: ['Heb', 'Hebreo', 'Hebr'], 660: ['Jak', 'Jakoba', 'Jak'], 670: ['1Pet', '1 Petera', '1Pie'],
+  680: ['2Pet', '2 Petera', '2Pie'], 690: ['1Jao', '1 Jaona', '1Jo'], 700: ['2Jao', '2 Jaona', '2Jo'],
+  710: ['3Jao', '3 Jaona', '3Jo'], 720: ['Joda', 'Joda', 'Joda'], 730: ['Apok', 'Apokalypsy', 'Apok'],
 };
 
 async function main() {
-  await ensureSource();
+  if (!fs.existsSync(SRC)) {
+    throw new Error(`Source introuvable : ${SRC} (voir source/RAPPORT_verification_bible.md)`);
+  }
   const db = JSON.parse(fs.readFileSync(SRC, 'utf8'));
-  const booksRows = db.objects.find((o) => o.name === 'books').rows;
-  const verseRows = db.objects.find((o) => o.name === 'verses').rows;
 
-  const byNum = {};
-  booksRows.forEach(([, num, short]) => (byNum[num] = { num, short }));
+  // db = { mg_1: { "mg1865::mg_1::ch::v": {verse_chapter, verse_number, verse_title, verse_text}, ... }, ..., mg_66: {...} }
+  // mg_<id> correspond à l'id séquentiel 1..66, dans le même ordre canonique que CANON.
+  const nums = Object.keys(CANON).map(Number).sort((a, b) => a - b);
 
   // text[code][chapterIndex][verseIndex] = texte
   const text = {};
   const chapters = {};
-  for (const [num, ch, v, t] of verseRows) {
-    const canon = CANON[num];
-    if (!canon) continue;
-    const code = canon[0];
-    if (!text[code]) text[code] = [];
-    if (!text[code][ch - 1]) text[code][ch - 1] = [];
-    text[code][ch - 1][v - 1] = t;
-    chapters[code] = Math.max(chapters[code] || 0, ch);
-  }
+  nums.forEach((num, i) => {
+    const id = i + 1;
+    const code = CANON[num][0];
+    const verses = db[`mg_${id}`];
+    if (!verses) return;
+    text[code] = [];
+    for (const key of Object.keys(verses)) {
+      const { verse_chapter: ch, verse_number: v, verse_title: title, verse_text: t } = verses[key];
+      if (!text[code][ch - 1]) text[code][ch - 1] = [];
+      text[code][ch - 1][v - 1] = title ? `<n>[${title}]</n> ${t}` : t;
+      chapters[code] = Math.max(chapters[code] || 0, ch);
+    }
+  });
 
-  const books = booksRows
-    .map(([, num, short]) => {
-      const canon = CANON[num];
-      if (!canon) return null;
-      const [code, name] = canon;
-      return {
-        id: num / 10, // 1..73 (approx) — on met un id séquentiel ensuite
-        num,
-        code,
-        name,
-        abbr: short,
-        testament: num < 470 ? 'TT' : 'TV',
-        chapters: chapters[code] || (text[code] ? text[code].length : 0),
-      };
-    })
-    .filter(Boolean);
-
-  // id séquentiel 1..66
-  books.forEach((b, i) => (b.id = i + 1));
+  const books = nums.map((num, i) => {
+    const [code, name, abbr] = CANON[num];
+    return {
+      id: i + 1,
+      num,
+      code,
+      name,
+      abbr,
+      testament: num < 470 ? 'TT' : 'TV',
+      chapters: chapters[code] || (text[code] ? text[code].length : 0),
+    };
+  });
 
   const totalVerses = Object.values(text).reduce(
     (n, chs) => n + chs.reduce((m, arr) => m + (arr ? arr.filter(Boolean).length : 0), 0),

@@ -26,7 +26,9 @@ export type IconName =
   | 'hash'
   | 'book-search'
   | 'music-search'
-  | 'sunrise';
+  | 'sunrise'
+  | 'home'
+  | 'gift';
 
 type Props = {
   name: IconName;
@@ -185,6 +187,29 @@ export function Icon({ name, size = 24, color = '#232020', strokeWidth = 1.8, fi
             {/* loupe */}
             <Circle {...stroke} cx={16} cy={15.5} r={4.1} />
             <Path {...stroke} d="M19 18.6 22 21.6" />
+          </>
+        );
+      case 'gift':
+        return (
+          <>
+            <Path {...stroke} d="M4 9.5h16v3H4z" />
+            <Path {...stroke} d="M5.5 12.5h13V20a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1z" />
+            <Path {...stroke} d="M12 9.5V21" />
+            <Path
+              {...stroke}
+              d="M12 9.5c0-2.2-1.4-4-3.2-4-1.3 0-2.3 1-2.3 2.2 0 1 .8 1.8 2 1.8z"
+            />
+            <Path
+              {...stroke}
+              d="M12 9.5c0-2.2 1.4-4 3.2-4 1.3 0 2.3 1 2.3 2.2 0 1-.8 1.8-2 1.8z"
+            />
+          </>
+        );
+      case 'home':
+        return (
+          <>
+            <Path {...stroke} d="M4 11.5 12 4l8 7.5" />
+            <Path {...stroke} d="M6 10v9.5a1 1 0 0 0 1 1h3.5V15h3v5.5H17a1 1 0 0 0 1-1V10" />
           </>
         );
       case 'music-search':

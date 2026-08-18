@@ -3,6 +3,7 @@ import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 
 import { getMofonainaByISO, toISO } from '@/data/mofonaina';
+import { birthdayMessage, birthdayNotifTitle, birthdaysOn } from '@/lib/birthdays';
 import { ensureDailyTitleId, titleText, type Lang } from '@/lib/dailyTitle';
 
 const SCHEDULED_KEY = 'mofonaina.notif.scheduledFor.v1';
@@ -76,6 +77,34 @@ export async function ensureDailyNotificationScheduled(lang: Lang): Promise<void
     content: { title: titleText(titleId, lang), body: buildBody(entry.theme, entry.reference), sound: 'default' },
     trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: fire, channelId: CHANNEL_ID },
   });
+
+  // Anniversaires : jour J (tombe le jour de `fire`) et rappel J-1 (tombe le lendemain
+  // de `fire`) — programmés au même horaire (6h) que la notif Mofon'aina du jour.
+  const todayBirthdays = birthdaysOn(fire);
+  if (todayBirthdays.length > 0) {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: birthdayNotifTitle(lang),
+        body: birthdayMessage('today', todayBirthdays, lang),
+        sound: 'default',
+      },
+      trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: fire, channelId: CHANNEL_ID },
+    });
+  }
+  const tomorrow = new Date(fire);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowBirthdays = birthdaysOn(tomorrow);
+  if (tomorrowBirthdays.length > 0) {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: birthdayNotifTitle(lang),
+        body: birthdayMessage('reminder', tomorrowBirthdays, lang),
+        sound: 'default',
+      },
+      trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: fire, channelId: CHANNEL_ID },
+    });
+  }
+
   await AsyncStorage.setItem(SCHEDULED_KEY, fireISO);
 }
 

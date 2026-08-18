@@ -33,6 +33,7 @@ const T: Record<string, Entry> = {
   // Accueil
   hello: { mg: 'Miarahaba', fr: 'Bonjour', en: 'Hello' },
   today_label: { mg: "MOFON'AINA ANDROANY", fr: 'MÉDITATION DU JOUR', en: 'TODAY’S READING' },
+  birthday_badge: { mg: 'TSINGERINTAONA', fr: 'ANNIVERSAIRE', en: 'BIRTHDAY' },
   read_today: { mg: 'Vakio androany', fr: 'Lire aujourd’hui', en: 'Read today' },
   read_full_chapter: { mg: 'Vakio ny toko manontolo', fr: 'Lire tout le chapitre', en: 'Read the whole chapter' },
 

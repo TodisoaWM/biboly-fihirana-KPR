@@ -2,6 +2,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { FavButton } from '@/components/FavButton';
+import { HomeButton } from '@/components/HomeButton';
 import { Icon } from '@/components/Icon';
 import { ProfileButton } from '@/components/ProfileButton';
 import { ReaderToolbar } from '@/components/ReaderToolbar';
@@ -40,9 +41,12 @@ export default function MofonainaScreen() {
   return (
     <Screen edges={['top']}>
       <View style={[styles.topBar, { borderBottomColor: theme.border }]}>
-        <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
-        </Pressable>
+        <View style={styles.leftCluster}>
+          <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+            <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
+          </Pressable>
+          <HomeButton />
+        </View>
         <Text style={[styles.topTitle, { color: theme.text }]}>Mofon'aina</Text>
         <View style={styles.rightCluster}>
           {reading && <FavButton fav={{ type: 'bible', ref: entry.reference, label: reading.label }} />}
@@ -107,6 +111,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   topTitle: { fontFamily: FONTS.display, fontSize: 21 },
   rightCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   content: { paddingHorizontal: 26, paddingTop: 18, paddingBottom: 40 },

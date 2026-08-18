@@ -2,6 +2,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
+import { HomeButton } from '@/components/HomeButton';
 import { Icon } from '@/components/Icon';
 import { ImageSlot } from '@/components/ImageSlot';
 import { Screen } from '@/components/Screen';
@@ -44,11 +45,14 @@ export default function EditProfileScreen() {
   return (
     <Screen edges={['top']}>
       <View style={styles.header}>
-        <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
-        </Pressable>
+        <View style={styles.leftCluster}>
+          <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+            <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
+          </Pressable>
+          <HomeButton />
+        </View>
         <Text style={[styles.title, { color: theme.text }]}>{t('edit_profile')}</Text>
-        <View style={{ width: 40 }} />
+        <View style={{ width: 88 }} />
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
@@ -114,6 +118,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   title: { fontFamily: FONTS.display, fontSize: 20 },
   content: { paddingHorizontal: SPACING.xl, paddingTop: 10, paddingBottom: SPACING.xl },
   photoWrap: { alignItems: 'center', gap: 12, marginBottom: 10 },

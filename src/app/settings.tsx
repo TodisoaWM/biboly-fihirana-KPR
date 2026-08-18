@@ -14,6 +14,7 @@ import {
   View,
 } from 'react-native';
 
+import { HomeButton } from '@/components/HomeButton';
 import { Icon } from '@/components/Icon';
 import { ImageSlot } from '@/components/ImageSlot';
 import { Screen } from '@/components/Screen';
@@ -139,11 +140,14 @@ export default function SettingsScreen() {
   return (
     <Screen>
       <View style={styles.header}>
-        <Pressable onPress={() => (router.canGoBack() ? router.back() : router.replace('/(tabs)'))} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border, shadowColor: theme.shadow }]}>
-          <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
-        </Pressable>
+        <View style={styles.leftCluster}>
+          <Pressable onPress={() => (router.canGoBack() ? router.back() : router.replace('/(tabs)'))} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border, shadowColor: theme.shadow }]}>
+            <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
+          </Pressable>
+          <HomeButton />
+        </View>
         <Text style={[styles.title, { color: theme.text }]}>{t('settings_title')}</Text>
-        <View style={{ width: 40 }} />
+        <View style={{ width: 88 }} />
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -312,6 +316,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
   },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   title: { fontFamily: FONTS.display, fontSize: 21 },
   content: { paddingHorizontal: 22, paddingBottom: SPACING.xl },
   profile: {

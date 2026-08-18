@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { SectionList, StyleSheet, Text, View } from 'react-native';
 import { Pressable } from 'react-native';
 
+import { HomeButton } from '@/components/HomeButton';
 import { Icon } from '@/components/Icon';
 import { ProfileButton } from '@/components/ProfileButton';
 import { Screen } from '@/components/Screen';
@@ -76,9 +77,12 @@ export default function AboutMofonainaScreen() {
   return (
     <Screen edges={['top']}>
       <View style={styles.header}>
-        <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
-        </Pressable>
+        <View style={styles.leftCluster}>
+          <Pressable onPress={goBack} style={[styles.iconBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+            <Icon name="chevron-left" size={19} color={theme.text} strokeWidth={2.2} />
+          </Pressable>
+          <HomeButton />
+        </View>
         <Text style={[styles.title, { color: theme.text }]}>Mofon'aina 2026</Text>
         <ProfileButton />
       </View>
@@ -111,6 +115,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   title: { fontFamily: FONTS.display, fontSize: 21 },
   content: { paddingHorizontal: SPACING.xl, paddingBottom: SPACING.xl },
   aboutWrap: { paddingTop: 6 },
