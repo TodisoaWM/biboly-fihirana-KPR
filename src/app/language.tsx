@@ -6,7 +6,7 @@ import { Screen } from '@/components/Screen';
 import { languageName, useI18n } from '@/lib/i18n';
 import { useSafeBack } from '@/lib/nav';
 import { Lang, setProfile, useProfile } from '@/lib/profile';
-import { FONTS, SPACING } from '@/theme/colors';
+import { FONTS, HEADER, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -27,7 +27,7 @@ export default function LanguageScreen() {
           </Pressable>
           <HomeButton />
         </View>
-        <Text style={[styles.title, { color: theme.text }]}>{t('language')}</Text>
+        <Text style={[styles.title, { color: theme.text }]} numberOfLines={1}>{t('language')}</Text>
         <View style={{ width: 88 }} />
       </View>
 
@@ -62,16 +62,16 @@ export default function LanguageScreen() {
 
 const styles = StyleSheet.create({
   header: {
-    paddingHorizontal: SPACING.xl,
+    paddingHorizontal: HEADER.pad,
     paddingTop: 6,
     paddingBottom: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
-  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  title: { fontFamily: FONTS.display, fontSize: 20 },
+  iconBtn: { width: HEADER.btn, height: HEADER.btn, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
+  title: { fontFamily: FONTS.display, fontSize: HEADER.title, flexShrink: 1 },
   content: { paddingHorizontal: SPACING.xl, paddingTop: 10 },
   hint: { fontFamily: FONTS.sansSemi, fontSize: 12.5, marginBottom: 12 },
   card: { borderRadius: 20, borderWidth: 1, paddingHorizontal: 15 },

@@ -11,7 +11,7 @@ import { getReading } from '@/data/bible';
 import { getMofonainaByISO } from '@/data/mofonaina';
 import { useI18n } from '@/lib/i18n';
 import { useSafeBack } from '@/lib/nav';
-import { FONTS, RADII } from '@/theme/colors';
+import { FONTS, HEADER, RADII } from '@/theme/colors';
 import { useTheme } from '@/theme/ThemeProvider';
 
 export default function MofonainaScreen() {
@@ -110,10 +110,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderBottomWidth: 1,
   },
-  iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
-  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  iconBtn: { width: HEADER.btn, height: HEADER.btn, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
   topTitle: { fontFamily: FONTS.display, fontSize: 21 },
-  rightCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  rightCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
   content: { paddingHorizontal: 26, paddingTop: 18, paddingBottom: 40 },
   eyebrow: { fontFamily: FONTS.sansBold, fontSize: 12, letterSpacing: 0.4 },
   theme: { fontFamily: FONTS.display, fontSize: 28, lineHeight: 33, marginTop: 8 },

@@ -1,3 +1,5 @@
+import { Dimensions } from 'react-native';
+
 /**
  * Palette Mofon'aina — extraite des maquettes claire et sombre.
  * `primary` est surchargée par l'accent choisi dans les réglages (Loko fototra).
@@ -128,6 +130,26 @@ export const SPACING = {
   lg: 16,
   xl: 24,
   xxl: 32,
+} as const;
+
+/**
+ * Métriques des en-têtes d'écran, resserrées sur les petits téléphones.
+ * Certains en-têtes portent jusqu'à cinq boutons de 40 px : à 360 dp de large,
+ * le titre central n'avait plus de place et se coupait lettre par lettre.
+ * L'app est verrouillée en portrait (app.json), une mesure au chargement suffit.
+ */
+const SCREEN_W = Dimensions.get('window').width;
+export const COMPACT_HEADER = SCREEN_W < 380;
+
+export const HEADER = {
+  /** Côté des boutons carrés de l'en-tête. */
+  btn: COMPACT_HEADER ? 36 : 40,
+  /** Écart entre boutons d'un même groupe. */
+  gap: COMPACT_HEADER ? 6 : 8,
+  /** Marge horizontale de la barre d'en-tête. */
+  pad: COMPACT_HEADER ? SPACING.lg : SPACING.xl,
+  /** Taille du titre central. */
+  title: COMPACT_HEADER ? 18 : 21,
 } as const;
 
 export const FONTS = {

@@ -12,7 +12,7 @@ import { TextSizeControl } from '@/components/TextSizeControl';
 import { getBook, getChapter } from '@/data/bible';
 import { useI18n } from '@/lib/i18n';
 import { addBibleRecent } from '@/lib/recents';
-import { FONTS, RADII } from '@/theme/colors';
+import { FONTS, HEADER, RADII } from '@/theme/colors';
 import { useTheme } from '@/theme/ThemeProvider';
 
 export default function ReadingScreen() {
@@ -190,10 +190,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderBottomWidth: 1,
   },
-  iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
-  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  iconBtn: { width: HEADER.btn, height: HEADER.btn, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
   topCenter: { alignItems: 'center', flex: 1 },
-  rightCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  rightCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
   bookTitle: { fontFamily: FONTS.display, fontSize: 21 },
   bookSub: { fontFamily: FONTS.sansBold, fontSize: 10, letterSpacing: 0.5, marginTop: 2 },
   refBanner: {

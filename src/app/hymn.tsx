@@ -12,7 +12,7 @@ import { collectionName, getHymn, getHymnsByCollection, hymnRef, placeIn } from 
 import { useI18n } from '@/lib/i18n';
 import { useSafeBack } from '@/lib/nav';
 import { addHymnRecent } from '@/lib/recents';
-import { FONTS, SPACING } from '@/theme/colors';
+import { FONTS, HEADER } from '@/theme/colors';
 import { useTheme } from '@/theme/ThemeProvider';
 
 export default function HymnScreen() {
@@ -168,7 +168,7 @@ export default function HymnScreen() {
 
 const styles = StyleSheet.create({
   header: {
-    paddingHorizontal: SPACING.xl,
+    paddingHorizontal: HEADER.pad,
     paddingTop: 6,
     paddingBottom: 12,
     flexDirection: 'row',
@@ -176,10 +176,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderBottomWidth: 1,
   },
-  iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
-  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  headerCenter: { alignItems: 'center', flex: 1, paddingHorizontal: 6 },
-  rightCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  iconBtn: { width: HEADER.btn, height: HEADER.btn, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
+  headerCenter: { alignItems: 'center', flex: 1, minWidth: 0, paddingHorizontal: 6 },
+  rightCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
   hTitle: { fontFamily: FONTS.display, fontSize: 18 },
   hSub: { fontFamily: FONTS.sansBold, fontSize: 10, letterSpacing: 0.5, marginTop: 2 },
   content: { paddingHorizontal: 26, paddingTop: 18, paddingBottom: 40 },

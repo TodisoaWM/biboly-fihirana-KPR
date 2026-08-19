@@ -9,7 +9,7 @@ import { Screen } from '@/components/Screen';
 import { getCalendarByMonth, MofonainaEntry, toISO } from '@/data/mofonaina';
 import { useI18n } from '@/lib/i18n';
 import { useSafeBack } from '@/lib/nav';
-import { FONTS, SPACING } from '@/theme/colors';
+import { FONTS, HEADER, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -82,7 +82,7 @@ export default function AboutMofonainaScreen() {
           </Pressable>
           <HomeButton />
         </View>
-        <Text style={[styles.title, { color: theme.text }]}>Mofon&apos;aina 2026</Text>
+        <Text style={[styles.title, { color: theme.text }]} numberOfLines={1}>Mofon&apos;aina 2026</Text>
         <ProfileButton />
       </View>
 
@@ -106,16 +106,16 @@ export default function AboutMofonainaScreen() {
 
 const styles = StyleSheet.create({
   header: {
-    paddingHorizontal: SPACING.xl,
+    paddingHorizontal: HEADER.pad,
     paddingTop: 6,
     paddingBottom: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
-  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  title: { fontFamily: FONTS.display, fontSize: 21 },
+  iconBtn: { width: HEADER.btn, height: HEADER.btn, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
+  title: { fontFamily: FONTS.display, fontSize: HEADER.title, flexShrink: 1 },
   content: { paddingHorizontal: SPACING.xl, paddingBottom: SPACING.xl },
   aboutWrap: { paddingTop: 6 },
   aboutCard: { borderRadius: 20, borderWidth: 1, padding: 18 },

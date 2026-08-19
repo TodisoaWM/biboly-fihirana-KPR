@@ -11,7 +11,7 @@ import { hymnRef, searchHymns } from '@/data/fihirana';
 import { useI18n } from '@/lib/i18n';
 import { useSafeBack } from '@/lib/nav';
 import { useToast } from '@/lib/toast';
-import { FONTS, SPACING } from '@/theme/colors';
+import { FONTS, HEADER, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -204,10 +204,10 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: HEADER.gap,
   },
-  iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
-  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  iconBtn: { width: HEADER.btn, height: HEADER.btn, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
   searchBox: {
     flex: 1,
     height: 46,

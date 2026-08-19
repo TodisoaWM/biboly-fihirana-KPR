@@ -12,7 +12,7 @@ import { getReading } from '@/data/bible';
 import { categoryLabel, getVavaka, refToPassage, type VavakaRef } from '@/data/vavaka';
 import { useI18n } from '@/lib/i18n';
 import { useSafeBack } from '@/lib/nav';
-import { FONTS, RADII, SPACING } from '@/theme/colors';
+import { FONTS, HEADER, RADII, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -163,15 +163,15 @@ export default function VavakaReadScreen() {
 
 const styles = StyleSheet.create({
   header: {
-    paddingHorizontal: SPACING.xl,
+    paddingHorizontal: HEADER.pad,
     paddingTop: 6,
     paddingBottom: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
-  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  iconBtn: { width: HEADER.btn, height: HEADER.btn, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
   notFound: { fontFamily: FONTS.sansSemi, fontSize: 15, textAlign: 'center', marginTop: 50 },
   content: { paddingHorizontal: SPACING.xl, paddingTop: 6, paddingBottom: 50 },
   badge: { alignSelf: 'flex-start', paddingVertical: 5, paddingHorizontal: 12, borderRadius: RADII.pill },

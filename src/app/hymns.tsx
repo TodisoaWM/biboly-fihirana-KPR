@@ -8,7 +8,7 @@ import { Screen } from '@/components/Screen';
 import { collectionName, getCollection, getHymnsByCollection, HymnListItem } from '@/data/fihirana';
 import { useI18n } from '@/lib/i18n';
 import { useSafeBack } from '@/lib/nav';
-import { FONTS, SPACING } from '@/theme/colors';
+import { FONTS, HEADER, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -62,7 +62,7 @@ export default function HymnsScreen() {
           <Text style={[styles.title, { color: theme.text }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>
             {collectionName(key)}
           </Text>
-          <Text style={[styles.sub, { color: theme.textFaint }]}>
+          <Text numberOfLines={1} style={[styles.sub, { color: theme.textFaint }]}>
             {coll ? t(coll.tradition === 'katolika' ? 'catholic' : 'protestant') : ''} · {items.length} {t('songs_uc')}
           </Text>
         </View>
@@ -92,18 +92,18 @@ export default function HymnsScreen() {
 
 const styles = StyleSheet.create({
   header: {
-    paddingHorizontal: SPACING.xl,
+    paddingHorizontal: HEADER.pad,
     paddingTop: 6,
     paddingBottom: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
-  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  headerCenter: { alignItems: 'center', flex: 1, paddingHorizontal: 8 },
-  rightCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  title: { fontFamily: FONTS.display, fontSize: 21 },
+  iconBtn: { width: HEADER.btn, height: HEADER.btn, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
+  headerCenter: { alignItems: 'center', flex: 1, minWidth: 0, paddingHorizontal: 6 },
+  rightCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
+  title: { fontFamily: FONTS.display, fontSize: HEADER.title },
   sub: { fontFamily: FONTS.sansBold, fontSize: 10, letterSpacing: 0.5, marginTop: 2 },
   content: { paddingHorizontal: SPACING.xl, paddingBottom: SPACING.xl },
   row: {

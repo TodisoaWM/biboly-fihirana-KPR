@@ -10,7 +10,7 @@ import { Book, BOOKS, getBook, getChapter, normalize } from '@/data/bible';
 import { GRID_GAP, gridCellSize } from '@/lib/grid';
 import { useI18n } from '@/lib/i18n';
 import { useSafeBack } from '@/lib/nav';
-import { FONTS, RADII, SPACING } from '@/theme/colors';
+import { FONTS, HEADER, RADII, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -115,7 +115,7 @@ export default function PickerScreen() {
             </Pressable>
             <HomeButton />
           </View>
-          <Text style={[styles.title, { color: theme.text }]}>{t('choose_book')}</Text>
+          <Text style={[styles.title, { color: theme.text }]} numberOfLines={1}>{t('choose_book')}</Text>
           <ProfileButton />
         </View>
 
@@ -170,7 +170,7 @@ export default function PickerScreen() {
           </Pressable>
           <HomeButton />
         </View>
-        <Text style={[styles.title, { color: theme.text }]}>{t('chapter_verse')}</Text>
+        <Text style={[styles.title, { color: theme.text }]} numberOfLines={1}>{t('chapter_verse')}</Text>
         <View style={{ width: 88 }} />
       </View>
 
@@ -236,16 +236,16 @@ export default function PickerScreen() {
 
 const styles = StyleSheet.create({
   header: {
-    paddingHorizontal: SPACING.xl,
+    paddingHorizontal: HEADER.pad,
     paddingTop: 6,
     paddingBottom: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
-  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  title: { fontFamily: FONTS.display, fontSize: 21 },
+  iconBtn: { width: HEADER.btn, height: HEADER.btn, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
+  title: { fontFamily: FONTS.display, fontSize: HEADER.title, flexShrink: 1 },
   // book step
   search: {
     marginHorizontal: SPACING.xl,

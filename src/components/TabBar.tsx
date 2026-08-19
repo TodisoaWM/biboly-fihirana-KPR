@@ -12,6 +12,9 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
+/** Hauteur de la pilule de l'onglet actif (sert aussi a calculer son rayon). */
+const PILL_H = 34;
+
 const TABS: Record<string, { key: string; icon: IconName }> = {
   index: { key: 'tab_today', icon: 'sun' },
   baiboly: { key: 'tab_bible', icon: 'book' },
@@ -118,15 +121,18 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
   },
   item: { alignItems: 'center', justifyContent: 'center' },
+  // borderRadius doit valoir exactement la moitie de la hauteur : au-dela,
+  // Android calcule l'outline de l'ombre (elevation) sur le rectangle englobant
+  // et la pilule active s'affiche carree. RADII.pill (999) declenchait le bug.
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 5,
-    minWidth: 34,
-    height: 34,
+    minWidth: PILL_H,
+    height: PILL_H,
     paddingHorizontal: 10,
-    borderRadius: RADII.pill,
+    borderRadius: PILL_H / 2,
   },
   pillLabel: { fontSize: 11, maxWidth: 84 },
 });

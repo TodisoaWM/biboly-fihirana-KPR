@@ -23,7 +23,7 @@ import { languageName, useI18n } from '@/lib/i18n';
 import { sendTestNotification } from '@/lib/notifications';
 import { useProfile } from '@/lib/profile';
 import { useToast } from '@/lib/toast';
-import { ACCENTS, FONTS, SPACING } from '@/theme/colors';
+import { ACCENTS, FONTS, HEADER, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -144,7 +144,7 @@ export default function SettingsScreen() {
           </Pressable>
           <HomeButton />
         </View>
-        <Text style={[styles.title, { color: theme.text }]}>{t('settings_title')}</Text>
+        <Text style={[styles.title, { color: theme.text }]} numberOfLines={1}>{t('settings_title')}</Text>
         <View style={{ width: 88 }} />
       </View>
 
@@ -314,8 +314,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
   },
-  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  title: { fontFamily: FONTS.display, fontSize: 21 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
+  title: { fontFamily: FONTS.display, fontSize: HEADER.title, flexShrink: 1 },
   content: { paddingHorizontal: 22, paddingBottom: SPACING.xl },
   profile: {
     flexDirection: 'row',

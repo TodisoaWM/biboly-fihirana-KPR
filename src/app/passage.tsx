@@ -12,7 +12,7 @@ import { getReading } from '@/data/bible';
 import { useI18n } from '@/lib/i18n';
 import { useSafeBack } from '@/lib/nav';
 import { addBibleRecent } from '@/lib/recents';
-import { FONTS, RADII } from '@/theme/colors';
+import { FONTS, HEADER, RADII } from '@/theme/colors';
 import { useTheme } from '@/theme/ThemeProvider';
 
 /** Affiche uniquement les versets choisis d'une référence (ex. « Jao 2.3-6 »). */
@@ -108,10 +108,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     gap: 10,
   },
-  iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
-  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  iconBtn: { width: HEADER.btn, height: HEADER.btn, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
   topTitle: { flex: 1, textAlign: 'center', fontFamily: FONTS.display, fontSize: 19 },
-  rightCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  rightCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
   content: { paddingHorizontal: 26, paddingTop: 18, paddingBottom: 40 },
   chip: {
     alignSelf: 'flex-start',

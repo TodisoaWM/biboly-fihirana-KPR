@@ -9,7 +9,7 @@ import { getBook } from '@/data/bible';
 import { useI18n } from '@/lib/i18n';
 import { useSafeBack } from '@/lib/nav';
 import { GRID_GAP, gridCellSize } from '@/lib/grid';
-import { FONTS, SPACING } from '@/theme/colors';
+import { FONTS, HEADER, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -71,17 +71,17 @@ export default function ChaptersScreen() {
 
 const styles = StyleSheet.create({
   header: {
-    paddingHorizontal: SPACING.xl,
+    paddingHorizontal: HEADER.pad,
     paddingTop: 6,
     paddingBottom: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
-  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  headerCenter: { alignItems: 'center', flex: 1 },
-  title: { fontFamily: FONTS.display, fontSize: 21 },
+  iconBtn: { width: HEADER.btn, height: HEADER.btn, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
+  headerCenter: { alignItems: 'center', flex: 1, minWidth: 0, paddingHorizontal: 6 },
+  title: { fontFamily: FONTS.display, fontSize: HEADER.title },
   sub: { fontFamily: FONTS.sansBold, fontSize: 10, letterSpacing: 0.5, marginTop: 2 },
   content: { paddingHorizontal: SPACING.xl, paddingVertical: SPACING.sm, paddingBottom: SPACING.xl },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: GRID_GAP, justifyContent: 'flex-start' },

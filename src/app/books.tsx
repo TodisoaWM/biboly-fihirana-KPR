@@ -9,7 +9,7 @@ import { Screen } from '@/components/Screen';
 import { BOOKS, Book, normalize } from '@/data/bible';
 import { useI18n } from '@/lib/i18n';
 import { useSafeBack } from '@/lib/nav';
-import { FONTS, SPACING } from '@/theme/colors';
+import { FONTS, HEADER, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -70,7 +70,7 @@ export default function BooksScreen() {
             style={[styles.searchInput, { color: theme.text, borderBottomColor: theme.primary }]}
           />
         ) : (
-          <Text style={[styles.title, { color: theme.text }]}>{t('tab_bible')}</Text>
+          <Text style={[styles.title, { color: theme.text }]} numberOfLines={1}>{t('tab_bible')}</Text>
         )}
 
         <View style={styles.rightCluster}>
@@ -113,19 +113,19 @@ export default function BooksScreen() {
 
 const styles = StyleSheet.create({
   header: {
-    paddingHorizontal: SPACING.xl,
+    paddingHorizontal: HEADER.pad,
     paddingTop: 6,
     paddingBottom: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: HEADER.gap,
   },
-  iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
-  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  iconBtn: { width: HEADER.btn, height: HEADER.btn, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
   closeX: { fontFamily: FONTS.sansBold, fontSize: 17 },
-  title: { flex: 1, fontFamily: FONTS.display, fontSize: 21 },
+  title: { flex: 1, minWidth: 0, fontFamily: FONTS.display, fontSize: HEADER.title },
   searchInput: { flex: 1, fontFamily: FONTS.sansSemi, fontSize: 16, paddingVertical: 4, borderBottomWidth: 2 },
-  rightCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  rightCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
   content: { paddingHorizontal: SPACING.xl, paddingBottom: SPACING.xl },
   section: { fontFamily: FONTS.sansExtra, fontSize: 12, letterSpacing: 0.6, marginBottom: 10 },
   card: {

@@ -9,7 +9,7 @@ import { Screen } from '@/components/Screen';
 import { collectionName, getCollection, getHymnsByCollection } from '@/data/fihirana';
 import { useI18n } from '@/lib/i18n';
 import { useSafeBack } from '@/lib/nav';
-import { FONTS, RADII, SPACING } from '@/theme/colors';
+import { FONTS, HEADER, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -113,20 +113,22 @@ export default function HymnPickerScreen() {
 
 const styles = StyleSheet.create({
   header: {
-    paddingHorizontal: SPACING.xl,
+    paddingHorizontal: HEADER.pad,
     paddingTop: 6,
     paddingBottom: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  iconBtn: { width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
-  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  title: { fontFamily: FONTS.display, fontSize: 20, flex: 1, textAlign: 'center', paddingHorizontal: 8 },
-  rightCluster: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  iconBtn: { width: HEADER.btn, height: HEADER.btn, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  leftCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
+  title: { fontFamily: FONTS.display, fontSize: HEADER.title, flex: 1, minWidth: 0, textAlign: 'center', paddingHorizontal: 6 },
+  rightCluster: { flexDirection: 'row', alignItems: 'center', gap: HEADER.gap, flexShrink: 0 },
   body: { flex: 1, paddingHorizontal: SPACING.xl, paddingTop: 10 },
   displayRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  display: { flex: 1, borderRadius: RADII.pill, borderWidth: 1, paddingVertical: 14, paddingHorizontal: 22, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
+  // Hauteur fixe + rayon a la moitie exacte : avec RADII.pill (999) et une
+  // ombre, Android rendait le bloc carre (outline calcule sur le rectangle).
+  display: { flex: 1, height: 56, borderRadius: 28, borderWidth: 1, paddingHorizontal: 22, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
   collLabel: { fontFamily: FONTS.display, fontSize: 20, flexShrink: 1 },
   num: { fontFamily: FONTS.display, fontSize: 22, minWidth: 30, textAlign: 'right' },
   xBtn: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
