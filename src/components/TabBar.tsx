@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutAnimation, Platform, Pressable, StyleSheet, Text, UIManager, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useI18n } from '@/lib/i18n';
@@ -7,10 +7,6 @@ import { FONTS, RADII } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 import { Icon, IconName } from './Icon';
-
-if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
-}
 
 /** Hauteur de la pilule de l'onglet actif (sert aussi a calculer son rayon). */
 const PILL_H = 34;
@@ -63,10 +59,7 @@ export function TabBar({ state, navigation }: TabBarProps) {
 
         const onPress = () => {
           const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-          if (!focused && !event.defaultPrevented) {
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-            navigation.navigate(route.name);
-          }
+          if (!focused && !event.defaultPrevented) navigation.navigate(route.name);
         };
 
         return (
@@ -78,15 +71,7 @@ export function TabBar({ state, navigation }: TabBarProps) {
             accessibilityLabel={t(cfg.key)}
             accessibilityState={{ selected: focused }}
           >
-            <View
-              style={[
-                styles.pill,
-                focused && {
-                  backgroundColor: theme.primary,
-                  ...cardShadow(theme.primary, 'sm'),
-                },
-              ]}
-            >
+            <View style={[styles.pill, focused && { backgroundColor: theme.primary }]}>
               <Icon
                 name={cfg.icon}
                 size={18}
@@ -121,9 +106,11 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
   },
   item: { alignItems: 'center', justifyContent: 'center' },
-  // borderRadius doit valoir exactement la moitie de la hauteur : au-dela,
-  // Android calcule l'outline de l'ombre (elevation) sur le rectangle englobant
-  // et la pilule active s'affiche carree. RADII.pill (999) declenchait le bug.
+  // Pilule ni animee ni ombree, volontairement. LayoutAnimation (deprecie et
+  // non supporte par Fabric sur Android) faisait perdre l'arrondi des le premier
+  // changement d'onglet : la pilule redevenait un rectangle jusqu'au relancement.
+  // Le rayon vaut la moitie exacte de la hauteur plutot que RADII.pill (999),
+  // qu'Android arrondit mal des qu'une elevation entre en jeu.
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
