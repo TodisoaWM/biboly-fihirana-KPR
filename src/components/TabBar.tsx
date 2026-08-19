@@ -1,11 +1,16 @@
 import React from 'react';
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { LayoutAnimation, Platform, Pressable, StyleSheet, Text, UIManager, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useI18n } from '@/lib/i18n';
 import { FONTS, RADII } from '@/theme/colors';
+import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 import { Icon, IconName } from './Icon';
+
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 const TABS: Record<string, { key: string; icon: IconName }> = {
   index: { key: 'tab_today', icon: 'sun' },
@@ -24,11 +29,17 @@ type TabBarProps = {
   };
 };
 
+/**
+ * Barre pleine largeur, plaquée en bas (aucun cadre visible autour), coins
+ * arrondis en haut seulement. L'onglet actif prend une pilule colorée (taille
+ * fixe, indépendante de la hauteur de la barre) ; le changement d'onglet
+ * déclenche une LayoutAnimation native (légère, pas de lib d'animation dédiée).
+ */
 export function TabBar({ state, navigation }: TabBarProps) {
   const { theme } = useTheme();
   const { t } = useI18n();
   const insets = useSafeAreaInsets();
-  const bottomPad = Math.max(insets.bottom, Platform.OS === 'web' ? 14 : 10) + 10;
+  const bottomGap = Math.max(insets.bottom, Platform.OS === 'web' ? 14 : 10);
 
   return (
     <View
@@ -36,8 +47,9 @@ export function TabBar({ state, navigation }: TabBarProps) {
         styles.bar,
         {
           backgroundColor: theme.surface,
-          borderTopColor: theme.border,
-          paddingBottom: bottomPad,
+          borderColor: theme.border,
+          paddingBottom: bottomGap,
+          ...cardShadow(theme.shadow, 'md'),
         },
       ]}
     >
@@ -48,38 +60,45 @@ export function TabBar({ state, navigation }: TabBarProps) {
 
         const onPress = () => {
           const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-          if (!focused && !event.defaultPrevented) navigation.navigate(route.name);
+          if (!focused && !event.defaultPrevented) {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            navigation.navigate(route.name);
+          }
         };
 
         return (
-          <Pressable key={route.key} onPress={onPress} style={styles.item} accessibilityRole="button">
+          <Pressable
+            key={route.key}
+            onPress={onPress}
+            style={styles.item}
+            accessibilityRole="button"
+            accessibilityLabel={t(cfg.key)}
+            accessibilityState={{ selected: focused }}
+          >
             <View
               style={[
                 styles.pill,
-                focused && { backgroundColor: theme.tabActiveBg },
+                focused && {
+                  backgroundColor: theme.primary,
+                  ...cardShadow(theme.primary, 'sm'),
+                },
               ]}
             >
               <Icon
                 name={cfg.icon}
-                size={21}
-                color={focused ? theme.text : theme.textFaint}
+                size={18}
+                color={focused ? theme.onPrimary : theme.textFaint}
                 strokeWidth={1.8}
               />
+              {focused && (
+                <Text
+                  numberOfLines={1}
+                  style={[styles.pillLabel, { color: theme.onPrimary, fontFamily: FONTS.sansExtra }]}
+                >
+                  {t(cfg.key)}
+                </Text>
+              )}
             </View>
-            <Text
-              numberOfLines={1}
-              adjustsFontSizeToFit
-              minimumFontScale={0.8}
-              style={[
-                styles.label,
-                {
-                  color: focused ? theme.text : theme.textFaint,
-                  fontFamily: focused ? FONTS.sansExtra : FONTS.sansSemi,
-                },
-              ]}
-            >
-              {t(cfg.key)}
-            </Text>
           </Pressable>
         );
       })}
@@ -90,22 +109,24 @@ export function TabBar({ state, navigation }: TabBarProps) {
 const styles = StyleSheet.create({
   bar: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 12,
-    paddingHorizontal: 22,
+    justifyContent: 'space-around',
+    paddingHorizontal: 10,
+    paddingTop: 16,
+    borderTopLeftRadius: RADII.xxl,
+    borderTopRightRadius: RADII.xxl,
     borderTopWidth: 1,
   },
-  item: { flex: 1, alignItems: 'center', gap: 5 },
+  item: { alignItems: 'center', justifyContent: 'center' },
   pill: {
-    width: 48,
-    height: 32,
-    // Toujours une pilule : rayon >= moitié de la hauteur, garanti quelle que
-    // soit la langue/largeur du label. `overflow: hidden` force le clip natif.
-    borderRadius: RADII.pill,
-    overflow: 'hidden',
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 5,
+    minWidth: 34,
+    height: 34,
+    paddingHorizontal: 10,
+    borderRadius: RADII.pill,
   },
-  label: { fontSize: 10 },
+  pillLabel: { fontSize: 11, maxWidth: 84 },
 });
