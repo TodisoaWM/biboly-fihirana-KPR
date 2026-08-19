@@ -1,7 +1,11 @@
 /**
  * Baiboly Malagasy (MG 1865, domaine public).
- * Données générées par `node scripts/build-bible.js` depuis le dump
- * Rohan29-AN/MG-Bible-65 → src/data/bible.data.json (66 livres, 31 099 versets).
+ * Données générées par `node scripts/build-bible.js` depuis
+ * `source/verses_complete_66books.json` → src/data/bible.data.json (66 livres).
+ *
+ * Cette source est celle décodée depuis l'app « Baiboly & Fihirana Protestanta ».
+ * Elle a remplacé le dump GitHub Rohan29-AN/MG-Bible-65, qui souffrait de versets
+ * concaténés et de divergences de texte.
  */
 
 export type Testament = 'TT' | 'TV';

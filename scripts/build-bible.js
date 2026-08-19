@@ -1,8 +1,11 @@
 /* eslint-disable no-console */
 /**
  * build-bible.js — transforme la Baiboly MG1865 corrigée (source/verses_complete_66books.json,
- * décodée depuis l'app « Baiboly & Fihirana Protestanta », cf. source/RAPPORT_verification_bible.md)
- * en un bundle compact pour l'app : src/data/bible.data.json  { books:[...], text:{ code:[[verset...]] } }
+ * décodée depuis l'app « Baiboly & Fihirana Protestanta ») en un bundle compact
+ * pour l'app : src/data/bible.data.json  { books:[...], text:{ code:[[verset...]] } }
+ *
+ * Idempotent : relire la même source régénère le même bundle. Ce script ne
+ * télécharge rien — le relancer ne peut pas réintroduire l'ancienne source GitHub.
  *
  * Le texte des versets garde les balises <n>[sous-titre]</n> (rendues comme
  * intertitres côté écran de lecture).
@@ -45,7 +48,7 @@ const CANON = {
 
 async function main() {
   if (!fs.existsSync(SRC)) {
-    throw new Error(`Source introuvable : ${SRC} (voir source/RAPPORT_verification_bible.md)`);
+    throw new Error(`Source introuvable : ${SRC}`);
   }
   const db = JSON.parse(fs.readFileSync(SRC, 'utf8'));
 
