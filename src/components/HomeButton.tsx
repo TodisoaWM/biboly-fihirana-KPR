@@ -8,13 +8,21 @@ import { useTheme } from '@/theme/ThemeProvider';
  * Retour direct à l'accueil depuis n'importe quelle profondeur de navigation.
  * `dismissAll()` vide la pile jusqu'au premier écran (le groupe `(tabs)`),
  * contrairement à `router.replace('/(tabs)')` qui empilerait sans purger.
+ * Sans pile à dépiler (lien direct, rafraîchissement web), `dismissAll()`
+ * déclencherait « POP_TO_TOP was not handled » : on retombe alors sur replace.
  */
 export function HomeButton() {
   const { theme } = useTheme();
   const router = useRouter();
+
+  const goHome = () => {
+    if (router.canDismiss()) router.dismissAll();
+    else router.replace('/(tabs)');
+  };
+
   return (
     <Pressable
-      onPress={() => router.dismissAll()}
+      onPress={goHome}
       hitSlop={6}
       accessibilityLabel="Androany"
       style={[styles.btn, { backgroundColor: theme.surface, borderColor: theme.border }]}
