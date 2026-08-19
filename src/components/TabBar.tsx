@@ -71,7 +71,8 @@ export function TabBar({ state, navigation }: TabBarProps) {
             accessibilityLabel={t(cfg.key)}
             accessibilityState={{ selected: focused }}
           >
-            <View style={[styles.pill, focused && { backgroundColor: theme.primary }]}>
+            {/* backgroundColor toujours defini (transparent au repos) : voir styles.pill. */}
+            <View style={[styles.pill, { backgroundColor: focused ? theme.primary : 'transparent' }]}>
               <Icon
                 name={cfg.icon}
                 size={18}
@@ -106,11 +107,13 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
   },
   item: { alignItems: 'center', justifyContent: 'center' },
-  // Pilule ni animee ni ombree, volontairement. LayoutAnimation (deprecie et
-  // non supporte par Fabric sur Android) faisait perdre l'arrondi des le premier
-  // changement d'onglet : la pilule redevenait un rectangle jusqu'au relancement.
-  // Le rayon vaut la moitie exacte de la hauteur plutot que RADII.pill (999),
-  // qu'Android arrondit mal des qu'une elevation entre en jeu.
+  // La pilule garde un backgroundColor en permanence ('transparent' au repos).
+  // Sans lui, Android n'a pas de drawable de fond au montage : la couleur ajoutee
+  // plus tard, quand l'onglet devient actif, arrivait sur un drawable neuf sans
+  // l'arrondi — l'onglet actif au lancement etait rond, tous les suivants carres.
+  // Le rayon vaut la moitie exacte de la hauteur (RADII.pill = 999 est mal
+  // arrondi par Android des qu'une elevation entre en jeu), et la pilule n'est
+  // ni animee ni ombree : LayoutAnimation n'est plus supporte par Fabric.
   pill: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -7,7 +7,7 @@ import { ProfileButton } from '@/components/ProfileButton';
 import { Screen } from '@/components/Screen';
 import { categoryLabel, getVavakaByTradition, type VavakaTradition } from '@/data/vavaka';
 import { useI18n } from '@/lib/i18n';
-import { FONTS, RADII, SPACING } from '@/theme/colors';
+import { FONTS, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -28,8 +28,12 @@ function Tab({
       onPress={() => onPress(value)}
       style={[
         styles.tab,
-        { borderColor: theme.border },
-        active && { backgroundColor: value === 'katolika' ? theme.accent : theme.teal, borderColor: 'transparent' },
+        {
+          // Fond toujours defini ('transparent' au repos) : ajoute apres coup,
+          // Android le pose sur un drawable neuf et perd l'arrondi de la pilule.
+          backgroundColor: active ? (value === 'katolika' ? theme.accent : theme.teal) : 'transparent',
+          borderColor: active ? 'transparent' : theme.border,
+        },
       ]}
     >
       <Text style={[styles.tabText, { color: active ? theme.onPrimary : theme.textMuted }]}>{label}</Text>
@@ -115,7 +119,8 @@ const styles = StyleSheet.create({
   tab: {
     flex: 1,
     height: 44,
-    borderRadius: RADII.pill,
+    // Moitie exacte de la hauteur : Android arrondit mal RADII.pill (999).
+    borderRadius: 22,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
