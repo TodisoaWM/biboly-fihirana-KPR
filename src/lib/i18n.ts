@@ -22,7 +22,11 @@ const T: Record<string, Entry> = {
   },
   prayer_refs: { mg: "Ao amin'ny Soratra Masina", fr: 'Références bibliques', en: 'Scripture references' },
   close: { mg: 'Akatona', fr: 'Fermer', en: 'Close' },
-  rights_reserved: { mg: 'Zo rehetra voatokana.', fr: 'Tous droits réservés.', en: 'All rights reserved.' },
+  rights_reserved: {
+    mg: 'Tsy azo amidy fa zaraina maimaimpoana.',
+    fr: 'Ne peut être vendu — partagé gratuitement.',
+    en: 'Not for sale — shared free of charge.',
+  },
   contact_title: { mg: 'Fifandraisana', fr: 'Contact', en: 'Contact' },
   contact_intro: {
     mg: "Raha te hifandray aminay, na hitatitra olana, na hanome soso-kevitra fanatsarana momba ny application dia :",

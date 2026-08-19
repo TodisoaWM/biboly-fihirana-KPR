@@ -168,3 +168,16 @@ sur le web, props natives ailleurs, car RN Web ignore les props `shadow*`).
 Les `<n>[...]</n>` de la maquette backend sont modélisés proprement par le champ
 `heading` de `ChapterContent` (affiché en intertitre coloré), plutôt que
 conservés sous forme de balises dans le texte.
+
+## Licence
+
+Ce projet est publié sous la **PolyForm Noncommercial License 1.0.0**
+(voir `LICENSE`) : usage, modification et redistribution libres **à des fins
+non commerciales** — usage personnel, cultuel, associatif, éducatif. La vente
+et toute exploitation commerciale ne sont pas autorisées.
+
+> Tsy azo amidy fa zaraina maimaimpoana.
+
+Le template Expo dont est issu le projet reste sous licence MIT, et les
+contenus textuels (Baiboly MG1865, recueils de cantiques) ont leurs propres
+provenances : voir `THIRD-PARTY-NOTICES.md`.
