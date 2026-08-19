@@ -1,7 +1,14 @@
 {
-  "name": "tmp_mofonaina",
+  "name": "baiboly-fihirana-kpr",
   "main": "expo-router/entry",
   "version": "1.0.0",
+  "description": "Baiboly sy Fihirana KPR — Bible malgache, recueils de cantiques, prières et mofon'aina.",
+  "author": "Rakotonirina Todisoa <todisoart02@gmail.com>",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TodisoaWM/biboly-fihirana-KPR.git"
+  },
   "dependencies": {
     "@expo-google-fonts/dm-sans": "^0.4.2",
     "@expo-google-fonts/edu-vic-wa-nt-hand": "^0.4.2",
@@ -40,6 +47,8 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
+    "eslint": "^9.0.0",
+    "eslint-config-expo": "~57.0.1",
     "jpeg-js": "^0.4.4",
     "typescript": "~6.0.3"
   },
