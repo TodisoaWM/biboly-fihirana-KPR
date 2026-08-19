@@ -1,6 +1,5 @@
 import { useRouter } from 'expo-router';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Pressable } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { HomeButton } from '@/components/HomeButton';
 import { Icon } from '@/components/Icon';
@@ -14,27 +13,20 @@ import { FONTS, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
-export default function RecentsScreen() {
+function Item({ r }: { r: Recent }) {
   const { theme } = useTheme();
   const { t } = useI18n();
   const router = useRouter();
-  const goBack = useSafeBack('/baiboly');
-  const recents = useRecents();
 
-  const bible = recents.filter((r) => r.type === 'bible');
-  const prot = recents.filter((r) => r.type === 'hymn' && r.tradition === 'protestanta');
-  const kato = recents.filter((r) => r.type === 'hymn' && r.tradition === 'katolika');
-
-  const open = (r: Recent) => {
+  const open = () => {
     if (r.type === 'bible') router.push({ pathname: '/passage', params: { ref: r.ref } });
     else router.push({ pathname: '/hymn', params: { id: r.id, c: r.collectionKey } });
   };
 
-  const Item = (r: Recent) => {
-    const isBible = r.type === 'bible';
-    return (
-      <View key={keyOf(r)} style={[styles.row, { backgroundColor: theme.surface, borderColor: theme.border }, cardShadow(theme.shadow, 'sm')]}>
-        <Pressable onPress={() => open(r)} style={styles.rowMain}>
+  const isBible = r.type === 'bible';
+  return (
+      <View style={[styles.row, { backgroundColor: theme.surface, borderColor: theme.border }, cardShadow(theme.shadow, 'sm')]}>
+        <Pressable onPress={open} style={styles.rowMain}>
           <View style={[styles.rowIcon, { backgroundColor: isBible ? theme.chipBg : '#F0BEBE' }]}>
             <Icon name={isBible ? 'book' : 'music'} size={18} color={isBible ? theme.chipText : theme.accent} strokeWidth={1.8} />
           </View>
@@ -51,23 +43,38 @@ export default function RecentsScreen() {
           <Text style={[styles.delX, { color: theme.textFaint }]}>✕</Text>
         </Pressable>
       </View>
-    );
-  };
+  );
+}
 
-  const Section = ({ label, list, section }: { label: string; list: Recent[]; section: 'bible' | 'protestanta' | 'katolika' }) => {
-    if (!list.length) return null;
-    return (
-      <>
-        <View style={styles.sectionRow}>
-          <Text style={[styles.sectionLabel, { color: theme.textFaint }]}>{label}</Text>
-          <Pressable onPress={() => clearRecents(section)} hitSlop={6}>
-            <Text style={[styles.clearBtn, { color: theme.accent }]}>{t('clear')}</Text>
-          </Pressable>
-        </View>
-        {list.map(Item)}
-      </>
-    );
-  };
+function Section({ label, list, section }: { label: string; list: Recent[]; section: 'bible' | 'protestanta' | 'katolika' }) {
+  const { theme } = useTheme();
+  const { t } = useI18n();
+
+  if (!list.length) return null;
+  return (
+    <>
+      <View style={styles.sectionRow}>
+        <Text style={[styles.sectionLabel, { color: theme.textFaint }]}>{label}</Text>
+        <Pressable onPress={() => clearRecents(section)} hitSlop={6}>
+          <Text style={[styles.clearBtn, { color: theme.accent }]}>{t('clear')}</Text>
+        </Pressable>
+      </View>
+      {list.map((r) => (
+        <Item key={keyOf(r)} r={r} />
+      ))}
+    </>
+  );
+}
+
+export default function RecentsScreen() {
+  const { theme } = useTheme();
+  const { t } = useI18n();
+  const goBack = useSafeBack('/baiboly');
+  const recents = useRecents();
+
+  const bible = recents.filter((r) => r.type === 'bible');
+  const prot = recents.filter((r) => r.type === 'hymn' && r.tradition === 'protestanta');
+  const kato = recents.filter((r) => r.type === 'hymn' && r.tradition === 'katolika');
 
   const empty = recents.length === 0;
 

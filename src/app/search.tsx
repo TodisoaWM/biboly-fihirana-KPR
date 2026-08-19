@@ -15,6 +15,11 @@ import { FONTS, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
+function Label({ children }: { children: string }) {
+  const { theme } = useTheme();
+  return <Text style={[styles.label, { color: theme.textFaint }]}>{children}</Text>;
+}
+
 export default function SearchScreen() {
   const { theme } = useTheme();
   const { t } = useI18n();
@@ -42,10 +47,6 @@ export default function SearchScreen() {
     if (debounced.trim().length >= 2 && !hasAny) toast.notFound();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debounced]);
-
-  const Label = ({ children }: { children: string }) => (
-    <Text style={[styles.label, { color: theme.textFaint }]}>{children}</Text>
-  );
 
   const rowStyle = ({ pressed }: { pressed: boolean }) => [
     styles.row,

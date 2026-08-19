@@ -1,7 +1,7 @@
 import Constants from 'expo-constants';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import {
   LayoutChangeEvent,
   Linking,
@@ -51,27 +51,25 @@ const SCALE_MAX = 1.35;
 
 function FontSlider() {
   const { theme, fontScale, setFontScale } = useTheme();
-  const widthRef = useRef(0);
+  const [width, setWidth] = useState(0);
   const ratio = (fontScale - SCALE_MIN) / (SCALE_MAX - SCALE_MIN);
 
-  const setFromX = (x: number) => {
-    const w = widthRef.current || 1;
-    const r = Math.min(1, Math.max(0, x / w));
-    setFontScale(SCALE_MIN + r * (SCALE_MAX - SCALE_MIN));
-  };
-
-  const pan = useRef(
-    PanResponder.create({
+  // Le PanResponder est recréé quand la largeur mesurée change, pour que les
+  // handlers ne capturent jamais une largeur périmée.
+  const pan = useMemo(() => {
+    const setFromX = (x: number) => {
+      const r = Math.min(1, Math.max(0, x / (width || 1)));
+      setFontScale(SCALE_MIN + r * (SCALE_MAX - SCALE_MIN));
+    };
+    return PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: () => true,
       onPanResponderGrant: (e) => setFromX(e.nativeEvent.locationX),
       onPanResponderMove: (e) => setFromX(e.nativeEvent.locationX),
-    }),
-  ).current;
+    });
+  }, [width, setFontScale]);
 
-  const onLayout = (e: LayoutChangeEvent) => {
-    widthRef.current = e.nativeEvent.layout.width;
-  };
+  const onLayout = (e: LayoutChangeEvent) => setWidth(e.nativeEvent.layout.width);
 
   return (
     <View>
@@ -90,7 +88,7 @@ function FontSlider() {
         <Text style={[styles.sliderAbig, { color: theme.text }]}>A</Text>
       </View>
       <Text style={[styles.preview, { color: theme.verse, fontSize: 15 * fontScale }]}>
-        « Ny teninao no jiro ho an'ny tongotro… »
+        « Ny teninao no jiro ho an&apos;ny tongotro… »
       </Text>
     </View>
   );
@@ -260,7 +258,7 @@ export default function SettingsScreen() {
             <View style={[styles.settingIcon, { backgroundColor: '#F0E0E0' }]}>
               <Icon name="info" size={17} color={theme.accent} strokeWidth={1.8} />
             </View>
-            <Text style={[styles.settingText, { color: theme.text }]}>Mofon'aina 2026</Text>
+            <Text style={[styles.settingText, { color: theme.text }]}>Mofon&apos;aina 2026</Text>
             <Icon name="chevron-right" size={17} color={theme.textFaint} strokeWidth={2.2} />
           </Pressable>
         </View>

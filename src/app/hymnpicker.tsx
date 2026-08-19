@@ -13,6 +13,24 @@ import { FONTS, RADII, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
+function Key({ lbl, onPress, kind }: { lbl: string; onPress: () => void; kind?: 'ok' | 'del' }) {
+  const { theme } = useTheme();
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.key,
+        { backgroundColor: kind === 'ok' ? theme.primary : theme.surface, borderColor: theme.border, opacity: pressed ? 0.7 : 1 },
+        cardShadow(theme.shadow, 'sm'),
+      ]}
+    >
+      <Text style={[styles.keyText, kind === 'del' && styles.keyTextSmall, { color: kind === 'ok' ? theme.onPrimary : kind === 'del' ? theme.accent : theme.text }]}>
+        {lbl}
+      </Text>
+    </Pressable>
+  );
+}
+
 /** Pavé numérique pour ouvrir un chant par son numéro/page dans un recueil. */
 export default function HymnPickerScreen() {
   const { theme } = useTheme();
@@ -47,21 +65,6 @@ export default function HymnPickerScreen() {
     if (!hit) return setError(`${label} ${n}: ${t('no_results')}`);
     router.push({ pathname: '/hymn', params: { id: hit.id, c: key, p: String(hit.page) } });
   };
-
-  const Key = ({ lbl, onPress, kind }: { lbl: string; onPress: () => void; kind?: 'ok' | 'del' }) => (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.key,
-        { backgroundColor: kind === 'ok' ? theme.primary : theme.surface, borderColor: theme.border, opacity: pressed ? 0.7 : 1 },
-        cardShadow(theme.shadow, 'sm'),
-      ]}
-    >
-      <Text style={[styles.keyText, kind === 'del' && styles.keyTextSmall, { color: kind === 'ok' ? theme.onPrimary : kind === 'del' ? theme.accent : theme.text }]}>
-        {lbl}
-      </Text>
-    </Pressable>
-  );
 
   return (
     <Screen edges={['top', 'bottom']}>

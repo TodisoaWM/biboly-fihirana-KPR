@@ -11,7 +11,7 @@ import { getReading } from '@/data/bible';
 import { getMofonainaByISO } from '@/data/mofonaina';
 import { useI18n } from '@/lib/i18n';
 import { useSafeBack } from '@/lib/nav';
-import { FONTS, RADII, SPACING } from '@/theme/colors';
+import { FONTS, RADII } from '@/theme/colors';
 import { useTheme } from '@/theme/ThemeProvider';
 
 export default function MofonainaScreen() {
@@ -47,7 +47,7 @@ export default function MofonainaScreen() {
           </Pressable>
           <HomeButton />
         </View>
-        <Text style={[styles.topTitle, { color: theme.text }]}>Mofon'aina</Text>
+        <Text style={[styles.topTitle, { color: theme.text }]}>Mofon&apos;aina</Text>
         <View style={styles.rightCluster}>
           {reading && <FavButton fav={{ type: 'bible', ref: entry.reference, label: reading.label }} />}
           <ProfileButton />

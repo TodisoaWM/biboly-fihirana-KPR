@@ -72,7 +72,6 @@ export default function ReadingScreen() {
       if (tries > 20) clearInterval(id);
     }, 100);
     return () => clearInterval(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookCode, chapter, vStart, vEnd]);
 
   const goto = (c: number) =>

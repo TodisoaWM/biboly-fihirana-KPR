@@ -18,21 +18,14 @@ import { FONTS, RADII, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
-export default function FihiranaScreen() {
+function CollectionCard({ name, count, accent, k }: { name: string; count: number; accent: string; k: string }) {
   const { theme } = useTheme();
   const { t } = useI18n();
   const router = useRouter();
 
-  const suggestions = suggestHymns();
-
-  const protestanta = COLLECTIONS.filter((c) => c.tradition === 'protestanta');
-  const katolika = COLLECTIONS.filter((c) => c.tradition === 'katolika');
-
-  const openCollection = (key: string) => router.push({ pathname: '/hymns', params: { collection: key } });
-
-  const CollectionCard = ({ name, count, accent, k }: { name: string; count: number; accent: string; k: string }) => (
+  return (
     <Pressable
-      onPress={() => openCollection(k)}
+      onPress={() => router.push({ pathname: '/hymns', params: { collection: k } })}
       style={({ pressed }) => [
         styles.coll,
         { backgroundColor: theme.surface, borderColor: theme.border, opacity: pressed ? 0.85 : 1 },
@@ -49,38 +42,52 @@ export default function FihiranaScreen() {
       <Icon name="chevron-right" size={16} color={theme.textFaint} strokeWidth={2.2} />
     </Pressable>
   );
+}
 
-  const SuggestionCard = ({ s, gradient, badgeBg }: { s: HymnSuggestion; gradient: [string, string]; badgeBg: string }) => {
-    const hymn = getHymn(s.id);
-    return (
-      <Pressable
-        onPress={() => router.push({ pathname: '/hymn', params: { id: s.id, c: s.collectionKey, p: String(s.page) } })}
-        style={({ pressed }) => [{ opacity: pressed ? 0.9 : 1 }]}
+function SuggestionCard({ s, gradient, badgeBg }: { s: HymnSuggestion; gradient: [string, string]; badgeBg: string }) {
+  const { theme } = useTheme();
+  const router = useRouter();
+  const hymn = getHymn(s.id);
+
+  return (
+    <Pressable
+      onPress={() => router.push({ pathname: '/hymn', params: { id: s.id, c: s.collectionKey, p: String(s.page) } })}
+      style={({ pressed }) => [{ opacity: pressed ? 0.9 : 1 }]}
+    >
+      <LinearGradient
+        colors={gradient}
+        start={{ x: 0.1, y: 0 }}
+        end={{ x: 0.9, y: 1 }}
+        style={[styles.suggest, { borderColor: theme.border }, cardShadow(theme.shadow, 'md')]}
       >
-        <LinearGradient
-          colors={gradient}
-          start={{ x: 0.1, y: 0 }}
-          end={{ x: 0.9, y: 1 }}
-          style={[styles.suggest, { borderColor: theme.border }, cardShadow(theme.shadow, 'md')]}
-        >
-          <View style={[styles.badge, { backgroundColor: badgeBg }]}>
-            <Text style={styles.badgeText} numberOfLines={1}>{hymnRef(s.tradition, s.collectionKey, s.page)}</Text>
-          </View>
-          <Text style={[styles.suggestTitle, { color: theme.text }]} numberOfLines={2}>
-            {s.title}
+        <View style={[styles.badge, { backgroundColor: badgeBg }]}>
+          <Text style={styles.badgeText} numberOfLines={1}>{hymnRef(s.tradition, s.collectionKey, s.page)}</Text>
+        </View>
+        <Text style={[styles.suggestTitle, { color: theme.text }]} numberOfLines={2}>
+          {s.title}
+        </Text>
+        {hymn ? (
+          <Text style={[styles.stanza, { color: theme.verse }]} numberOfLines={2}>
+            {stanzaPreview(hymn)}
           </Text>
-          {hymn ? (
-            <Text style={[styles.stanza, { color: theme.verse }]} numberOfLines={2}>
-              {stanzaPreview(hymn)}
-            </Text>
-          ) : null}
-          <View style={[styles.playBtn, { backgroundColor: theme.primary }, cardShadow(theme.primary, 'md')]}>
-            <Icon name="arrow-right" size={20} color={theme.onPrimary} strokeWidth={2.2} />
-          </View>
-        </LinearGradient>
-      </Pressable>
-    );
-  };
+        ) : null}
+        <View style={[styles.playBtn, { backgroundColor: theme.primary }, cardShadow(theme.primary, 'md')]}>
+          <Icon name="arrow-right" size={20} color={theme.onPrimary} strokeWidth={2.2} />
+        </View>
+      </LinearGradient>
+    </Pressable>
+  );
+}
+
+export default function FihiranaScreen() {
+  const { theme } = useTheme();
+  const { t } = useI18n();
+  const router = useRouter();
+
+  const suggestions = suggestHymns();
+
+  const protestanta = COLLECTIONS.filter((c) => c.tradition === 'protestanta');
+  const katolika = COLLECTIONS.filter((c) => c.tradition === 'katolika');
 
   return (
     <Screen>

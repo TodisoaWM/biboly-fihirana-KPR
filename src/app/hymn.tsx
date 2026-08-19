@@ -72,7 +72,10 @@ export default function HymnScreen() {
     katolika ? (it.page > 0 ? `Pejy ${it.page}` : `#${it.index}`) : `${collectionName(collKey)} ${it.page}`;
 
   const size = 17 * fontScale;
-  let stanzaNo = 0;
+
+  // Numérotation des strophes calculée en amont (les refrains ne comptent pas).
+  let counter = 0;
+  const stanzaLabels = hymn.verses.map((v) => (v.r ? null : v.n ?? ++counter));
 
   return (
     <Screen edges={['top', 'bottom']}>
@@ -124,8 +127,7 @@ export default function HymnScreen() {
               </View>
             );
           }
-          stanzaNo += 1;
-          const label = v.n ?? stanzaNo;
+          const label = stanzaLabels[i];
           return (
             <View key={i} style={styles.stanzaRow}>
               <Text style={[styles.stanzaNum, { color: theme.accent }]}>{label}</Text>

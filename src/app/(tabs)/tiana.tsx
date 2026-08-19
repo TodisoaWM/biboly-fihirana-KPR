@@ -11,26 +11,20 @@ import { FONTS, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
-export default function TianaScreen() {
+function Item({ f }: { f: Fav }) {
   const { theme } = useTheme();
   const { t } = useI18n();
   const router = useRouter();
-  const favs = useFavorites();
 
-  const bible = favs.filter((f) => f.type === 'bible');
-  const prot = favs.filter((f) => f.type === 'hymn' && f.tradition === 'protestanta');
-  const kato = favs.filter((f) => f.type === 'hymn' && f.tradition === 'katolika');
-
-  const open = (f: Fav) => {
+  const open = () => {
     if (f.type === 'bible') router.push({ pathname: '/passage', params: { ref: f.ref } });
     else router.push({ pathname: '/hymn', params: { id: f.id, c: f.collectionKey } });
   };
 
-  const Item = (f: Fav) => {
-    const isBible = f.type === 'bible';
-    return (
-      <View key={keyOf(f)} style={[styles.row, { backgroundColor: theme.surface, borderColor: theme.border }, cardShadow(theme.shadow, 'sm')]}>
-        <Pressable onPress={() => open(f)} style={styles.rowMain}>
+  const isBible = f.type === 'bible';
+  return (
+      <View style={[styles.row, { backgroundColor: theme.surface, borderColor: theme.border }, cardShadow(theme.shadow, 'sm')]}>
+        <Pressable onPress={open} style={styles.rowMain}>
           <View style={[styles.rowIcon, { backgroundColor: isBible ? theme.chipBg : '#F0BEBE' }]}>
             <Icon name={isBible ? 'book' : 'music'} size={18} color={isBible ? theme.chipText : theme.accent} strokeWidth={1.8} />
           </View>
@@ -47,23 +41,37 @@ export default function TianaScreen() {
           <Icon name="heart-filled" size={20} color={theme.accent} />
         </Pressable>
       </View>
-    );
-  };
+  );
+}
 
-  const Section = ({ label, list, section }: { label: string; list: Fav[]; section: 'bible' | 'protestanta' | 'katolika' }) => {
-    if (!list.length) return null;
-    return (
-      <>
-        <View style={styles.sectionRow}>
-          <Text style={[styles.sectionLabel, { color: theme.textFaint }]}>{label}</Text>
-          <Pressable onPress={() => clearFavorites(section)} hitSlop={6}>
-            <Text style={[styles.clearBtn, { color: theme.accent }]}>{t('clear')}</Text>
-          </Pressable>
-        </View>
-        {list.map(Item)}
-      </>
-    );
-  };
+function Section({ label, list, section }: { label: string; list: Fav[]; section: 'bible' | 'protestanta' | 'katolika' }) {
+  const { theme } = useTheme();
+  const { t } = useI18n();
+
+  if (!list.length) return null;
+  return (
+    <>
+      <View style={styles.sectionRow}>
+        <Text style={[styles.sectionLabel, { color: theme.textFaint }]}>{label}</Text>
+        <Pressable onPress={() => clearFavorites(section)} hitSlop={6}>
+          <Text style={[styles.clearBtn, { color: theme.accent }]}>{t('clear')}</Text>
+        </Pressable>
+      </View>
+      {list.map((f) => (
+        <Item key={keyOf(f)} f={f} />
+      ))}
+    </>
+  );
+}
+
+export default function TianaScreen() {
+  const { theme } = useTheme();
+  const { t } = useI18n();
+  const favs = useFavorites();
+
+  const bible = favs.filter((f) => f.type === 'bible');
+  const prot = favs.filter((f) => f.type === 'hymn' && f.tradition === 'protestanta');
+  const kato = favs.filter((f) => f.type === 'hymn' && f.tradition === 'katolika');
 
   const empty = favs.length === 0;
 

@@ -11,6 +11,32 @@ import { FONTS, RADII, SPACING } from '@/theme/colors';
 import { cardShadow } from '@/theme/elevation';
 import { useTheme } from '@/theme/ThemeProvider';
 
+function Tab({
+  value,
+  label,
+  active,
+  onPress,
+}: {
+  value: VavakaTradition;
+  label: string;
+  active: boolean;
+  onPress: (v: VavakaTradition) => void;
+}) {
+  const { theme } = useTheme();
+  return (
+    <Pressable
+      onPress={() => onPress(value)}
+      style={[
+        styles.tab,
+        { borderColor: theme.border },
+        active && { backgroundColor: value === 'katolika' ? theme.accent : theme.teal, borderColor: 'transparent' },
+      ]}
+    >
+      <Text style={[styles.tabText, { color: active ? theme.onPrimary : theme.textMuted }]}>{label}</Text>
+    </Pressable>
+  );
+}
+
 export default function VavakaScreen() {
   const { theme } = useTheme();
   const { t } = useI18n();
@@ -34,22 +60,6 @@ export default function VavakaScreen() {
     return order.map((cat) => ({ cat, items: map.get(cat)! }));
   }, [tradition]);
 
-  const Tab = ({ value, label }: { value: VavakaTradition; label: string }) => {
-    const active = tradition === value;
-    return (
-      <Pressable
-        onPress={() => setTradition(value)}
-        style={[
-          styles.tab,
-          { borderColor: theme.border },
-          active && { backgroundColor: value === 'katolika' ? theme.accent : theme.teal, borderColor: 'transparent' },
-        ]}
-      >
-        <Text style={[styles.tabText, { color: active ? theme.onPrimary : theme.textMuted }]}>{label}</Text>
-      </Pressable>
-    );
-  };
-
   return (
     <Screen>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -63,8 +73,8 @@ export default function VavakaScreen() {
 
         {/* Bascule tradition */}
         <View style={styles.tabs}>
-          <Tab value="katolika" label={t('catholic')} />
-          <Tab value="protestanta" label={t('protestant')} />
+          <Tab value="katolika" label={t('catholic')} active={tradition === 'katolika'} onPress={setTradition} />
+          <Tab value="protestanta" label={t('protestant')} active={tradition === 'protestanta'} onPress={setTradition} />
         </View>
 
         {groups.map(({ cat, items }) => (

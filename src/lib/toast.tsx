@@ -35,18 +35,21 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const op = useSharedValue(0);
   const ty = useSharedValue(-24);
 
+  // API get/set de Reanimated 4 : l'identité des shared values est stable, d'où les deps vides.
   const hide = useCallback(() => {
-    op.value = withTiming(0, { duration: 220 });
-    ty.value = withTiming(-24, { duration: 220 }, (done) => {
-      if (done) runOnJS(setContent)(null);
-    });
+    op.set(withTiming(0, { duration: 220 }));
+    ty.set(
+      withTiming(-24, { duration: 220 }, (done) => {
+        if (done) runOnJS(setContent)(null);
+      }),
+    );
   }, [op, ty]);
 
   const show = useCallback(
     (c: ToastContent) => {
       setContent(c);
-      op.value = withTiming(1, { duration: 240 });
-      ty.value = withTiming(0, { duration: 240 });
+      op.set(withTiming(1, { duration: 240 }));
+      ty.set(withTiming(0, { duration: 240 }));
       if (timer.current) clearTimeout(timer.current);
       timer.current = setTimeout(hide, 3000);
     },
@@ -55,7 +58,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
   const notFound = useCallback(() => show(NOT_FOUND), [show]);
 
-  const cardStyle = useAnimatedStyle(() => ({ opacity: op.value, transform: [{ translateY: ty.value }] }));
+  const cardStyle = useAnimatedStyle(() => ({ opacity: op.get(), transform: [{ translateY: ty.get() }] }));
 
   return (
     <Ctx.Provider value={{ notFound, show }}>

@@ -1,7 +1,6 @@
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
-import { SectionList, StyleSheet, Text, View } from 'react-native';
-import { Pressable } from 'react-native';
+import { Pressable, SectionList, StyleSheet, Text, View } from 'react-native';
 
 import { HomeButton } from '@/components/HomeButton';
 import { Icon } from '@/components/Icon';
@@ -83,7 +82,7 @@ export default function AboutMofonainaScreen() {
           </Pressable>
           <HomeButton />
         </View>
-        <Text style={[styles.title, { color: theme.text }]}>Mofon'aina 2026</Text>
+        <Text style={[styles.title, { color: theme.text }]}>Mofon&apos;aina 2026</Text>
         <ProfileButton />
       </View>
 

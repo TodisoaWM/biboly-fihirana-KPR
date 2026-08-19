@@ -12,7 +12,7 @@ import { getReading } from '@/data/bible';
 import { useI18n } from '@/lib/i18n';
 import { useSafeBack } from '@/lib/nav';
 import { addBibleRecent } from '@/lib/recents';
-import { FONTS, RADII, SPACING } from '@/theme/colors';
+import { FONTS, RADII } from '@/theme/colors';
 import { useTheme } from '@/theme/ThemeProvider';
 
 /** Affiche uniquement les versets choisis d'une référence (ex. « Jao 2.3-6 »). */
